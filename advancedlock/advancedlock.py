@@ -578,7 +578,7 @@ class AdvancedLock(commands.Cog):
                 mods, read_messages=True, send_messages=True
             )
         if seconds == 0:
-            return await
+            return await ctx.send("test")
         await ctx.send(
             f":lock: Channel locked for {seconds} seconds. Only Moderators can type."
         )
