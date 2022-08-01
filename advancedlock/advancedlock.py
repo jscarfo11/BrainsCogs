@@ -577,13 +577,7 @@ class AdvancedLock(commands.Cog):
             await ctx.channel.set_permissions(
                 mods, read_messages=True, send_messages=True
             )
-        if seconds == 0:
-            return await ctx.send("test")
-        await ctx.send(
-            f":lock: Channel locked for {seconds} seconds. Only Moderators can type."
-        )
-        await asyncio.sleep(seconds)
-        await ctx.invoke(self.bot.get_command("unlock"))
+
 
     @checks.mod_or_permissions(manage_roles=True)
     @commands.command()
