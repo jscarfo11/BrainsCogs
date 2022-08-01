@@ -227,7 +227,7 @@ class AdvancedLock(commands.Cog):
     @commands.guild_only()
     @setlock.command(name="ignore")
     async def setlock_ignore(
-        self, ctx: commands.Context, new_channel: discord.TextChannel
+            self, ctx: commands.Context, new_channel: discord.TextChannel
     ):
         """ Ignore a channel during server lock. """
         has_been_set = await self.config.guild(ctx.guild).has_been_set()
@@ -259,7 +259,7 @@ class AdvancedLock(commands.Cog):
     @commands.guild_only()
     @setlock.command(name="unignore")
     async def setlock_unignore(
-        self, ctx: commands.Context, new_channel: discord.TextChannel
+            self, ctx: commands.Context, new_channel: discord.TextChannel
     ):
         """ Remove channels from the ignored list. """
         has_been_set = await self.config.guild(ctx.guild).has_been_set()
@@ -395,7 +395,7 @@ class AdvancedLock(commands.Cog):
     @commands.guild_only()
     @setlock.command(name="channel")
     async def setlock_channel(
-        self, ctx: commands.Context, channel: discord.TextChannel
+            self, ctx: commands.Context, channel: discord.TextChannel
     ):
         """ List channel's settings. """
         has_been_set = await self.config.guild(ctx.guild).has_been_set()
@@ -419,8 +419,8 @@ class AdvancedLock(commands.Cog):
                     ro = get(ctx.guild.roles, id=role_id).name
                     ro_list.append(ro)
                 ro_desc = (
-                    f"The following roles may access {channel.mention}: "
-                    + humanize_list(ro_list)
+                        f"The following roles may access {channel.mention}: "
+                        + humanize_list(ro_list)
                 )
             except Exception:
                 ro_desc = "Not specified"
@@ -578,7 +578,7 @@ class AdvancedLock(commands.Cog):
                 mods, read_messages=True, send_messages=True
             )
         if seconds == 0:
-         pass
+            pass
         await ctx.send(
             f":lock: Channel locked for {seconds} seconds. Only Moderators can type."
         )
@@ -707,8 +707,8 @@ class AdvancedLock(commands.Cog):
                             for ig_id in ignore:
                                 check_channels.append(ig_id)
                             if any(
-                                channel.id not in check_channels
-                                for channel in ctx.guild.text_channels
+                                    channel.id not in check_channels
+                                    for channel in ctx.guild.text_channels
                             ):
                                 return await ctx.send(
                                     "Uh oh. I cannot let you do this. Ask your Admins to add remaining channels."
@@ -787,8 +787,8 @@ class AdvancedLock(commands.Cog):
                             for ig_id in ignore:
                                 check_channels.append(ig_id)
                             if any(
-                                channel.id not in check_channels
-                                for channel in ctx.guild.text_channels
+                                    channel.id not in check_channels
+                                    for channel in ctx.guild.text_channels
                             ):
                                 return await ctx.send(
                                     "Uh oh. I cannot let you do this. Ask your Admins to add remaining channels."
