@@ -2,7 +2,8 @@
 A place to store all of the Redbot cogs I have either made/modified, with credit to the originals.
 ## How to Install
 [p]repo add BrainsCogs https://github.com/King0fBrains/BrainsCogs
-[p]cog install <Cog Name>
+
+[p]cog install < Cog Name >
 
 | Cog Name | Description | Original Creator | 
 |----------|-------------|------------------|
