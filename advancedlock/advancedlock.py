@@ -645,7 +645,7 @@ class AdvancedLock(commands.Cog):
             await ctx.channel.set_permissions(
                 mods, read_messages=True, send_messages=True
             )
-        await ctx.send(":unlock: Channel unlocked.")
+
 
     @checks.mod_or_permissions(manage_roles=True)
     @commands.command()
