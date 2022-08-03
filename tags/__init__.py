@@ -29,8 +29,8 @@ from pathlib import Path
 from redbot.core.bot import Red
 from redbot.core.errors import CogLoadError
 
-from .core import Tags
-from .utils import validate_tagscriptengine
+from core import Tags
+from utils import validate_tagscriptengine
 
 VERSION_RE = re.compile(r"TagScript==(\d\.\d\.\d)")
 

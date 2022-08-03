@@ -32,10 +32,10 @@ import TagScriptEngine as tse
 from redbot.core import commands
 from redbot.core.utils.menus import start_adding_reactions
 
-from .abc import MixinMeta
-from .blocks import DeleteBlock, ReactBlock, SilentBlock
-from .errors import BlacklistCheckFailure, RequireCheckFailure, WhitelistCheckFailure
-from .objects import SilentContext, Tag
+from tags.abc import MixinMeta
+from blocks import DeleteBlock, ReactBlock, SilentBlock
+from tags.errors import BlacklistCheckFailure, RequireCheckFailure, WhitelistCheckFailure
+from tags.objects import SilentContext, Tag
 
 log = logging.getLogger("red.phenom4n4n.tags.processor")
 
@@ -176,7 +176,7 @@ class Processor(MixinMeta):
 
             if actions.get("commands"):
                 for command in actions["commands"]:
-                    if commands.split()[0] == "invoketag":
+                    if command.split()[0] == "invoketag":
                         await ctx.send("Tag looping isn't allowed.")
                         return
                     new = copy(ctx.message)

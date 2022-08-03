@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-from abc import ABC
+from tags.abc import ABC
 
 from redbot.core import Config, commands
 from redbot.core.bot import Red

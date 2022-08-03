@@ -27,8 +27,8 @@ import re
 from discord.utils import escape_mentions
 from redbot.core import commands
 
-from .errors import TagError
-from .objects import Tag
+from errors import TagError
+from objects import Tag
 
 PASTEBIN_RE = re.compile(r"(?:https?://(?:www\.)?)?pastebin\.com/(?:raw/)?([a-zA-Z0-9]+)")
 

@@ -31,7 +31,7 @@ from redbot.core import Config, commands
 from redbot.core.bot import Red
 from redbot.core.utils.chat_formatting import box, humanize_list, humanize_number, inline, pagify
 
-from .errors import TagAliasError
+from tags.errors import TagAliasError
 
 hn = humanize_number
 ALIAS_LIMIT = 10

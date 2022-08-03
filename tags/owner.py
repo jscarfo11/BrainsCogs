@@ -36,11 +36,11 @@ from redbot.core.utils import AsyncIter
 from redbot.core.utils.menus import DEFAULT_CONTROLS
 from redbot.core.utils.predicates import MessagePredicate
 
-from .abc import MixinMeta
-from .blocks import ContextVariableBlock, ConverterBlock
-from .errors import BlockCompileError
-from .objects import Tag
-from .utils import get_menu
+from tags.abc import MixinMeta
+from blocks import ContextVariableBlock, ConverterBlock
+from tags.errors import BlockCompileError
+from tags.objects import Tag
+from utils import get_menu
 
 log = logging.getLogger("red.phenom4n4n.owner")
 
