@@ -1,3 +1,7 @@
+import discord
+from redbot.core import Config, commands
+
+
 class switchcodes(commands.Cog):
     """Store and retrieve Nintendo Switch friend codes."""
     
@@ -51,3 +55,4 @@ class switchcodes(commands.Cog):
         await ctx.tick()
         
         return
+        
