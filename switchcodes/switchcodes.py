@@ -35,8 +35,8 @@ class switchcodes(commands.Cog):
     @fc.command()
     async def add(self, ctx, code: str):
         """Set your switch code"""
-        if len(code) > 30:
-            await ctx.send("That code is too long. Please try again.")
+        if len(code) > 12:
+            await ctx.send("That code is too long. Expected value is `12`! Please try again.")
             await ctx.tick()
             return
         async with self.config.guild(ctx.guild).codes() as codes:
