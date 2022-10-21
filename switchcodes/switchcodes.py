@@ -38,6 +38,7 @@ class switchcodes(commands.Cog):
         if len(code) > 12:
             await ctx.send("That code is too long. Expected length is 12! Please try again.")
             await ctx.tick()
+            return
         elif len(code) < 12:
             await ctx.send("That code is too short. Expected length is 12! Please try again.")
             await ctx.tick()
