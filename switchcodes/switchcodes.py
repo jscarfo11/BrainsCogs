@@ -1,7 +1,3 @@
-import discord
-from redbot.core import Config, commands
-
-
 class switchcodes(commands.Cog):
     """Store and retrieve Nintendo Switch friend codes."""
     
@@ -22,7 +18,7 @@ class switchcodes(commands.Cog):
             user = self.bot.get_user(user)
         elif user is None:
             user = ctx.author
-        code = await self.config.guild(ctx.guild).codes.get_raw(user.id, default=None)
+        code = await self.config.guild(ctx.guild).codes.get_raw(str(user.id), default=None)
         if code is None:
             await ctx.send("That user has not set their Switch Code.")
         else:
@@ -35,12 +31,8 @@ class switchcodes(commands.Cog):
     @fc.command()
     async def add(self, ctx, code: str):
         """Set your switch code"""
-        if len(code) > 12:
-            await ctx.send("That code is too long. Expected length is `12` Please try again.")
-            await ctx.tick()
-            return
-        elif len(code) < 12:
-            await ctx.send("That code is too short. Expected length is `12` Please try again.")
+        if len(code) > 30:
+            await ctx.send("That code is too long. Please try again.")
             await ctx.tick()
             return
         async with self.config.guild(ctx.guild).codes() as codes:
@@ -51,10 +43,10 @@ class switchcodes(commands.Cog):
         return
 
     @fc.command()
-     async def remove(self, ctx):
+    async def remove(self, ctx):
         """Remove your switch code"""
         async with self.config.guild(ctx.guild).codes() as codes:
-            codes.pop[str(str(ctx.author.id))
+            codes.pop(str(ctx.author.id))
         await ctx.send("Your Switch Code has been removed.")
         await ctx.tick()
         
