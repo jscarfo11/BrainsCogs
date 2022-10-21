@@ -51,10 +51,10 @@ class switchcodes(commands.Cog):
         return
 
     @fc.command()
-    async def remove(self, ctx):
+     async def remove(self, ctx):
         """Remove your switch code"""
         async with self.config.guild(ctx.guild).codes() as codes:
-            codes.pop(ctx.author.id, None)
+            codes.pop(str(ctx.author.id))
         await ctx.send("Your Switch Code has been removed.")
         await ctx.tick()
         
