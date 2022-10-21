@@ -39,6 +39,10 @@ class switchcodes(commands.Cog):
             await ctx.send("That code is too long. Please try again.")
             await ctx.tick()
             return
+        elif len(code) < 12:
+            await ctx.send("That code is too short. Expected length is 12! Please try again.")
+            await ctx.tick()
+            return
         async with self.config.guild(ctx.guild).codes() as codes:
             codes[str(ctx.author.id)] = str(code)
         await ctx.send(f"Your Switch Code has been set to {code}.")
