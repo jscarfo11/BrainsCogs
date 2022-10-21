@@ -1,0 +1,15 @@
+{
+    "name": "switchcodes",
+    "short": "Store and retrieve Nintendo Switch friend codes.",
+    "description": "Store and retrieve Nintendo Switch friend codes. Commissioned by 10Ben.",
+	"install_msg": "You've installed the cog.",
+    "end_user_data_statement": "This cog only stores provided codes. You may remove your code with the command.",
+    "author": ["Leet - @leetfin"],
+    "required_cogs": {},
+    "requirements": [],
+    "tags": ["commission", "social"],
+    "min_bot_version": "3.4.14",
+    "hidden": false,
+    "disabled": false,
+    "type": "COG"
+}
