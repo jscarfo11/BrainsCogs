@@ -44,7 +44,7 @@ class switchcodes(commands.Cog):
             await ctx.tick()
             return
         async with self.config.guild(ctx.guild).codes() as codes:
-            codes[ctx.author.id] = str(code)
+            codes[str(ctx.author.id)] = str(code)
         await ctx.send(f"Your Switch Code has been set to {code}.")
         await ctx.tick()
         
@@ -54,7 +54,7 @@ class switchcodes(commands.Cog):
      async def remove(self, ctx):
         """Remove your switch code"""
         async with self.config.guild(ctx.guild).codes() as codes:
-            codes.pop(str(ctx.author.id))
+            codes.pop[str(str(ctx.author.id))
         await ctx.send("Your Switch Code has been removed.")
         await ctx.tick()
         
