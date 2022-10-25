@@ -26,7 +26,7 @@ class switchcodes(commands.Cog):
         if code is None:
             await ctx.send("That user has not set their Switch Code.")
         else:
-            embed = discord.Embed(title=f"{user.display_name}'s Switch Code", description=f"SW-"code
+            embed = discord.Embed(title=f"{user.display_name}'s Switch Code", description=f"SW-(code)"
             await ctx.send(embed=embed)
         await ctx.tick()
         
