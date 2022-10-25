@@ -44,8 +44,8 @@ class switchcodes(commands.Cog):
             await ctx.tick()
             return
         async with self.config.guild(ctx.guild).codes() as codes:
-            codes[str(ctx.author.id)] = str(code)
-        await ctx.send(f"Your Switch Code has been set to {str(code)[:4]-str(code)[4:8]-str(code)[8-12]}.")
+            codes[str(ctx.author.id)] = f'{str(code)[:4]}-{str(code)[4:8]}-{str(code)[8:12]}'
+        await ctx.send(f"Your Switch Code has been set to {code}.")
         await ctx.tick()
         
         return
