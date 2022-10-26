@@ -53,10 +53,12 @@ class switchcodes(commands.Cog):
     @fc.command()
     async def remove(self, ctx):
         """Remove your switch code"""
-        async with self.config.guild(ctx.guild).codes() as codes:
-            codes.pop(str(ctx.author.id))
-        await ctx.send("Your Switch Code has been removed.")
+        try:
+            async with self.config.guild(ctx.guild).codes() as codes:
+                codes.pop(str(ctx.author.id))
+            await ctx.send("Your Switch Code has been removed.")
+        except KeyError:
+            await ctx.send("You do not have a Switch Code set.")
         await ctx.tick()
         
         return
-        
