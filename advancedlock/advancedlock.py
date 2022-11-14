@@ -556,6 +556,9 @@ class AdvancedLock(commands.Cog):
                             await ctx.channel.set_permissions(
                                 ro, read_messages=True, send_messages=False
                             )
+                            await ctx.channel.set_permissions(
+                                 everyone, read_messages=True, send_messages=False
+                             )
                     else:
                         if not defa:
                             return await ctx.send(
