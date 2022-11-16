@@ -34,8 +34,6 @@ ROLE_MENTION_REGEX = re.compile(r"<@&(?P<id>[0-9]{17,19})>")
 class Speak(BaseCog):
     """
     Speak as if you were the bot
-
-    Documentation: http://laggron.red/say.html
     """
 
     def __init__(self, bot):
