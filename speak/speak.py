@@ -303,7 +303,7 @@ class Speak(BaseCog):
         except discord.Forbidden:
             return await ctx.send("I cannot reply to the message!")
         return await ctx.tick()
-    @commands.command()
+    @commands.command(aliases=['editmsg'])
     @checks.admin()
     async def editmessage(
         self, ctx, ecid: int, editid: int, ccid: int, *, content: Union[int, str]

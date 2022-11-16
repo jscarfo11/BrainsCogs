@@ -4,7 +4,7 @@
   "name": "Speak",
   "disabled": false,
   "short": "Allows you to talk as the bot!",
-  "description": "Check users with AltDentifier API",
+  "description": "Combination of Laggron42's *Say* cog, Obi-Wan3's *Reply* cog, and NeuroAssassin's editor cog. <https://github.com/laggron42/Laggrons-Dumb-Cogs> <https://github.com/Obi-Wan3/OB13-Cogs> <https://github.com/NeuroAssassin/Toxic-Cogs>",
   "tags": [],
   "requirements": [
     "git+https://github.com/retke/laggron-utils"
