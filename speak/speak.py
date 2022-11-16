@@ -1,4 +1,7 @@
 ﻿# Say by retke, aka El Laggron
+from lib2to3.pgen2.token import COMMA
+from os import name
+import typing
 
 import discord
 import asyncio
@@ -286,6 +289,20 @@ class Speak(BaseCog):
                     embed.set_image(url=message.attachments[0].url)
 
                 await u.send(embed=embed)
+    @commands.command(name="reply")
+    @checks.admin_or_permissions(administrator=True)
+    async def _reply(self, ctx: commands.Context, to_mention: typing.Optional[bool], message: discord.Message, *, content: str):
+        """Reply to a message using the Discord reply feature."""
+        if not to_mention:
+            mention_author = False
+        else:
+            mention_author = to_mention
+
+        try:
+            await message.reply(content, mention_author=mention_author)
+        except discord.Forbidden:
+            return await ctx.send("I cannot reply to the message!")
+        return await ctx.tick()
 
     @commands.command(hidden=True)
     @checks.is_owner()
