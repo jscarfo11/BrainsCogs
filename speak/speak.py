@@ -43,7 +43,7 @@ class Speak(BaseCog):
     __author__ = ["retke (El Laggron)"]
     __version__ = "1.6.1"
 
-    async def speak(
+    async def say(
         self,
         ctx: commands.Context,
         channel: Optional[discord.TextChannel],
