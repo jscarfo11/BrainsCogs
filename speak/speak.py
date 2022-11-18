@@ -9,13 +9,11 @@ import logging
 import re
 
 from typing import Optional, Union
-from laggron_utils.logging import close_logger, DisabledConsoleOutput
 
 from redbot.core import checks, commands
 from redbot.core.i18n import Translator, cog_i18n
 from redbot.core.utils.tunnel import Tunnel
 
-log = logging.getLogger("red.laggron.say")
 _ = Translator("Say", __file__)
 BaseCog = getattr(commands, "Cog", object)
 
@@ -96,9 +94,9 @@ class Speak(BaseCog):
                         delete_after=15,
                     )
             else:
-                log.error(
-                    f"Unknown permissions error when sending a message.\n{error_message}",
-                    exc_info=e,
+                await ctx.send(
+                   _("Unknown permissions error when sending a message.\n{error_message}") + channel.mention,
+                        delete_after=15,
                 )
 
     @commands.command(name="say")
@@ -406,28 +404,9 @@ class Speak(BaseCog):
             if isinstance(channel, discord.DMChannel):
                 await self.stop_interaction(user)
 
-    @listener()
-    async def on_command_error(self, ctx, error):
-        if not isinstance(error, commands.CommandInvokeError):
-            return
-        if not ctx.command.cog_name == self.__class__.__name__:
-            # That error doesn't belong to the cog
-            return
-        with DisabledConsoleOutput(log):
-            log.error(
-                f"Exception in command '{ctx.command.qualified_name}'.\n\n",
-                exc_info=error.original,
-            )
-
     async def stop_interaction(self, user):
         self.interaction.remove(user)
         await user.send(_("Session closed"))
 
     def __unload(self):
         self.cog_unload()
-
-    def cog_unload(self):
-        log.debug("Unloading cog...")
-        for user in self.interaction:
-            self.bot.loop.create_task(self.stop_interaction(user))
-        close_logger(log)
