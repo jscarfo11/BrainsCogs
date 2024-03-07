@@ -91,7 +91,9 @@ class AutoDelete(commands.Cog):
             await ctx.send("No channels are in the list.")
             return
         channels = [ctx.guild.get_channel(c).mention for c in channels]
-        await ctx.send(" ".join(channels))
+        description = "\n".join(channels)
+        embed = discord.Embed(title="Auto Delete Channels", description=description, color=await ctx.embed_color())
+        await ctx.send(embed=embed)
 
     @autodelete.group(name="user", aliases=["users"])
     async def user(self, ctx):
@@ -126,7 +128,9 @@ class AutoDelete(commands.Cog):
             await ctx.send("No users are in the list.")
             return
         users = [ctx.guild.get_member(u).mention for u in users]
-        await ctx.send(" ".join(users))
+        description = "\n".join(users)
+        embed = discord.Embed(title="Auto Delete Users", description=description, color=await ctx.embed_color())
+        await ctx.send(embed=embed)
 
     @autodelete.group(name="role", aliases=["roles"])
     async def role(self, ctx):
@@ -160,5 +164,7 @@ class AutoDelete(commands.Cog):
         if not roles:
             await ctx.send("No roles are in the list.")
             return
-        roles = [ctx.guild.get_role(r).name for r in roles]
-        await ctx.send(" ".join(roles))
+        roles = [ctx.guild.get_role(r).mention for r in roles]
+        description = "\n".join(roles)
+        embed = discord.Embed(title="Auto Delete Roles", description=description, color=await ctx.embed_color())
+        await ctx.send(embed=embed)
