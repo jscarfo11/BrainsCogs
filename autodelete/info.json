@@ -1,0 +1,11 @@
+{
+    "author" : ["brains"],
+    "install_msg" : "Thank you for installing AutoDelete!",
+    "name" : "AutoDelete",
+    "hidden" : false,
+    "disabled" : false,
+    "short" : "Delete messages in certain channels",
+    "description" : "Automatically delete messages in certain channels after a certain amount of time.",
+    "tags" : ["delete, automation"],
+    "end_user_data_statement": "This cog does not store any end user data."
+}
