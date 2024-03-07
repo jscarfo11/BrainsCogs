@@ -24,5 +24,5 @@ with open(Path(__file__).parent / "info.json") as fp:
 async def setup(bot):
     init_logger(log, Speak.__class__.__name__)
     n = Speak(bot)
-    bot.add_cog(n)
+    await bot.add_cog(n)
     log.debug("Cog successfully loaded on the instance.")
