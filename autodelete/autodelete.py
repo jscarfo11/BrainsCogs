@@ -8,7 +8,7 @@ from redbot.core import checks, commands, Config
 
 
 class AutoDelete(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot):  # Basically just setting up the config
         self.bot = bot
         self.config = Config.get_conf(self, identifier=17981871242730416904)
         default_guild = {
@@ -16,30 +16,32 @@ class AutoDelete(commands.Cog):
             "channels": [],
             "users": [],
             "roles": [],
+            "time": 5,
         }
         self.config.register_guild(**default_guild)
 
-    # async def cog_check(self, ctx: Context[BotT]) -> bool:
-    #     return await commands.admin()
+        # async def cog_check(self, ctx: Context[BotT]) -> bool:
+
+    #     return await ctx.bot.is_admin(ctx.author)
 
     @commands.Cog.listener()
     async def on_message(self, message):
         if message.author.bot:
             return
-        if message.guild is None:
+        if message.guild is None:  # If it's a dm
             return
         if message.channel.id not in await self.config.guild(message.guild).channels():
             return
         if message.author.id in await self.config.guild(message.guild).users():
             return
-        config_roles = await self.config.guild(message.guild).roles()
+        config_roles = await self.config.guild(message.guild).roles()  # get user roles
         user_roles = (r.id for r in message.author.roles)
 
-        if any(role in config_roles for role in user_roles):
+        if any(role in config_roles for role in user_roles):  # get
             return
         # if any(role in await self.config.guild(message.guild).roles() for role in message.author.roles):
         #     return
-        await asyncio.sleep(5)
+        await asyncio.sleep(await self.config.guild(message.guild).time())
         await message.delete()
 
     @checks.admin_or_permissions(manage_messages=True)
@@ -168,3 +170,20 @@ class AutoDelete(commands.Cog):
         description = "\n".join(roles)
         embed = discord.Embed(title="Auto Delete Roles", description=description, color=await ctx.embed_color())
         await ctx.send(embed=embed)
+
+    @autodelete.group(name="time")
+    async def autodelete_time(self, ctx):
+        """Manage the amount of time before the messages get deleted"""
+        pass
+
+    @autodelete_time.command(name='set')
+    async def time_set(self, ctx, num: int):
+        """Set the amount of time for the autodelete"""
+        await self.config.guild(ctx.guild).time.set(num)
+        await ctx.send(f"The message delete time is now {num} seconds")
+
+    @autodelete_time.command(name='show')
+    async def time_show(self, ctx):
+        """Gets the current amount of time for the autodelete"""
+        num = await self.config.guild(ctx.guild).time()
+        await ctx.send(f'The current amount of time before auto-deleting a message is {num} seconds.')
