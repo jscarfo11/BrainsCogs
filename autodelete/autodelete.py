@@ -26,6 +26,8 @@ class AutoDelete(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
+        if not await self.config.guild(message.guild).on():
+            return
         if message.author.bot:
             return
         if message.guild is None:  # If it's a dm
