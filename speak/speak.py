@@ -123,7 +123,7 @@ class Speak(commands.Cog):
             )
         else:
             await Tunnel.message_forwarder(destination=channel, content=message)
-
+        await ctx.message.add_reaction("✅")
     @commands.command(name="tunnel")
     async def tunnel(self, ctx: commands.Context, channel: discord.TextChannel):
         """Open a tunnel to a channel."""
@@ -140,6 +140,7 @@ class Speak(commands.Cog):
         loop = asyncio.get_event_loop()
         edit_handler_task = loop.create_task(self.edit_handler(ctx, channel))
         message_handler_task = loop.create_task(self.message_handler(ctx, channel, edit_handler_task))
+        await ctx.message.add_reaction("✅")
         await asyncio.gather(message_handler_task, edit_handler_task)
 
 
@@ -153,3 +154,4 @@ class Speak(commands.Cog):
             await ctx.author.send("Tunnel closed.")
         else:
             await ctx.author.send("You don't have a tunnel open.")
+
