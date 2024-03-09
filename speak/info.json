@@ -4,11 +4,9 @@
   "name": "Speak",
   "disabled": false,
   "short": "Allows you to talk as the bot!",
-  "description": "Combination of Laggron42's *Say* cog, Obi-Wan3's *Reply* cog, and NeuroAssassin's editor cog. https://github.com/laggron42/Laggrons-Dumb-Cogs https://github.com/Obi-Wan3/OB13-Cogs https://github.com/NeuroAssassin/Toxic-Cogs",
-  "tags": [],
-  "requirements": [
-    "git+https://github.com/retke/laggron-utils"
-  ],
+  "description": "My personal cog for talking as the bot! It draws inspiration from wanting to have commands from multiple cogs in one place. The cogs that this draws inspiration from are Laggron42's *Say* cog, Obi-Wan3's *Reply* cog, and NeuroAssassin's *editor* cog.",
+  "tags": ["fun", "utility"],
+  "requirements": [],
   "hidden": false,
   "end_user_data_statement": "This cog does not store any End User Data."
 }
