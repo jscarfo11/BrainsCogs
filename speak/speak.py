@@ -13,9 +13,6 @@ class Speak(commands.Cog):
         self.tunnel_users = []
         self.bot = bot
 
-    async def cog_check(self, ctx: commands.Context) -> bool:
-        return (await ctx.bot.is_admin(ctx.author)) or (await ctx.bot.is_owner(ctx.author))
-
     async def message_handler(self, ctx: commands.Context, channel: discord.TextChannel, task: asyncio.Task):
         user = ctx.author.id
         stime = datetime.datetime.now()
@@ -115,6 +112,7 @@ class Speak(commands.Cog):
             active.remove(msg.id)
         print("Edit handler ended")
 
+    @commands.admin()
     @commands.command(name="say")
     async def say(self, ctx: commands.Context, channel: Optional[discord.TextChannel], *, message: str):
         """Say a message in a channel."""
@@ -130,6 +128,7 @@ class Speak(commands.Cog):
             await Tunnel.message_forwarder(destination=channel, content=message)
         await ctx.message.add_reaction("✅")
 
+    @commands.admin()
     @commands.command(name="tunnel")
     async def tunnel(self, ctx: commands.Context, channel: discord.TextChannel):
         """Open a tunnel to a channel."""
@@ -149,6 +148,7 @@ class Speak(commands.Cog):
         await ctx.message.add_reaction("✅")
         await asyncio.gather(message_handler_task, edit_handler_task)
 
+    @commands.admin()
     @commands.command(name="reply")
     async def reply(self, ctx: commands.Context, mention: Optional[bool], message: discord.Message, *, content: str):
         """Reply to a message."""
@@ -162,6 +162,7 @@ class Speak(commands.Cog):
             await message.reply(content=content, mention_author=mention)
         await ctx.message.add_reaction("✅")
 
+    @commands.admin()
     @commands.command(name="editmsg")
     async def edit(self, ctx: commands.Context, message: discord.Message, *, content: str):
         """Edit a message."""
