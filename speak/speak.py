@@ -83,7 +83,7 @@ class Speak(commands.Cog):
                 if msg.id in active:
                     continue
                 active.append(msg.id)
-            except TimeoutError:
+            except asyncio.TimeoutError:
                 print("Timeout error")
                 continue
             if msg is None:
