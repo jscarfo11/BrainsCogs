@@ -86,6 +86,9 @@ class Speak(commands.Cog):
             except asyncio.TimeoutError:
                 print("Timeout error")
                 continue
+            except discord.errors.NotFound:
+                print("Message not found")
+                continue
             if msg is None:
                 continue
             try:
