@@ -2,7 +2,7 @@ import discord
 import datetime
 import asyncio
 
-from redbot.core import commands, Config, checks
+from redbot.core import commands
 from typing import Optional
 from redbot.core.utils.tunnel import Tunnel
 from discord.utils import format_dt
@@ -124,6 +124,7 @@ class Speak(commands.Cog):
         else:
             await Tunnel.message_forwarder(destination=channel, content=message)
         await ctx.message.add_reaction("✅")
+
     @commands.command(name="tunnel")
     async def tunnel(self, ctx: commands.Context, channel: discord.TextChannel):
         """Open a tunnel to a channel."""
@@ -143,15 +144,27 @@ class Speak(commands.Cog):
         await ctx.message.add_reaction("✅")
         await asyncio.gather(message_handler_task, edit_handler_task)
 
+    @commands.command(name="reply")
+    async def reply(self, ctx: commands.Context, mention: Optional[bool], message: discord.Message, *, content: str):
+        """Reply to a message."""
+        if mention is None:
+            mention = False
+        files = await Tunnel.files_from_attatch(ctx.message)
+        if files:
+            await message.reply(content=content, files=files, mention_author=mention)
 
-    @commands.command(name="close_tunnel")
-    async def close_tunnel(self, ctx: commands.Context):
-        """Close the tunnel."""
-        user = ctx.author.id
-        await ctx.author.send(str(self.tunnel_users))
-        if user in self.tunnel_users:
-            self.tunnel_users.remove(user)
-            await ctx.author.send("Tunnel closed.")
         else:
-            await ctx.author.send("You don't have a tunnel open.")
+            await message.reply(content=content, mention_author=mention)
+        await ctx.message.add_reaction("✅")
 
+    @commands.command(name="editmsg")
+    async def edit(self, ctx: commands.Context, message: discord.Message, *, content: str):
+        """Edit a message."""
+        if message.author != self.bot.user:
+            return await ctx.send("I can only edit my own messages.")
+        if message.content == content:
+            return await ctx.send("The content is the same as the original message.")
+        if len(content) > 2000:
+            return await ctx.send("The message is too long.")
+        await message.edit(content=content)
+        await ctx.message.add_reaction("✅")
