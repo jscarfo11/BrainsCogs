@@ -92,7 +92,9 @@ class Speak(commands.Cog):
                 user_check(user)
             except TimeoutError:
                 break
-            if msg.author == self.bot.user:
+            if msg.channel == ctx.author.dm_channel:
+                continue
+            elif msg.author == self.bot.user:
                 continue
             elif msg.channel == channel:
                 title = f"Message edited in {channel.name}"
