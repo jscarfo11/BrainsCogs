@@ -102,17 +102,20 @@ class ChannelLock(commands.Cog):
     @role.command(name="add")
     async def role_add(self, ctx, *roles: discord.Role):
         """Add a role to the locked roles list."""
+        if not roles:
+            param = commands.Parameter("roles", commands.Parameter.VAR_POSITIONAL)
+            raise commands.MissingRequiredArgument(param)
 
         for role in roles:
             async with self.config.guild(ctx.guild).admin_roles() as r:
                 if role.id in r:
-                    return await ctx.send(f"{role.mention} is already an admin role.")
+                    return await ctx.send(f"{role.name} is already an admin role.")
             async with self.config.guild(ctx.guild).supporter_roles() as r:
                 if role.id in r:
-                    return await ctx.send(f"{role.mention} is already a supporter role.")
+                    return await ctx.send(f"{role.name} is already a supporter role.")
             async with self.config.guild(ctx.guild).access_roles() as r:
                 if role.id in r:
-                    return await ctx.send(f"{role.mention} is already an access role.")
+                    return await ctx.send(f"{role.name} is already an access role.")
 
         for role in roles:
             r_type = MessagePredicate.lower_contained_in(["admin", "supporter", "access"])
@@ -142,6 +145,10 @@ class ChannelLock(commands.Cog):
     @role.command(name="remove")
     async def role_remove(self, ctx, *roles: discord.Role):
         """Remove a role from the locked roles list."""
+        if not roles:
+            param = commands.Parameter("roles", commands.Parameter.VAR_POSITIONAL)
+            raise commands.MissingRequiredArgument(param)
+
         for role in roles:
             async with self.config.guild(ctx.guild).admin_roles() as r:
                 if role.id in r:
@@ -162,12 +169,14 @@ class ChannelLock(commands.Cog):
                 f"{role.name} is not a role you have set. Run `{self.bot.get_prefix()}channellock role list` to see "
                 f"all of your roles.")
 
+    @role_add.error
     @role_remove.error
-    async def role_remove_error(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("You need to provide a role to remove.")
-
-
+    async def role_error_handler(self, ctx, error):
+        print(type(error))
+        if isinstance(error, commands.RoleNotFound):
+            await ctx.send("Role not found. If you are using the role name and it has a space, use double quotes.")
+        else:
+            await ctx.bot.on_command_error(ctx, error, unhandled_by_cog=True)
 
     @role.command(name="list")
     async def role_list(self, ctx):
