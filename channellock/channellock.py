@@ -19,11 +19,44 @@ class ChannelLock(commands.Cog):
         }
         self.config.register_guild(**default_guild)
 
-    async def supporter_lock(self, channel: discord.TextChannel):
-        pass
+    async def lock_channel(self, ctx, roles):
+        everyone = discord.utils.get(ctx.guild.roles, name="@everyone")
+        for role in roles:
+            role = ctx.guild.get_role(role)
+            await ctx.channel.set_permissions(role, send_messages=False, read_messages=True)
+        admin_roles = await self.config.guild(ctx.guild).admin_roles()
+        for role in admin_roles:
+            role = ctx.guild.get_role(role)
+            await ctx.channel.set_permissions(role, send_messages=True, read_messages=True)
+        await ctx.channel.set_permissions(everyone, send_messages=False, read_messages=True)
+        async with self.config.guild(ctx.guild).locked_channels() as channels:
+            channels.append(ctx.channel.id)
 
-    async def regular_lock(self, channel: discord.TextChannel):
-        pass
+    # async def supporter_lock(self, channel: discord.TextChannel):
+    #     roles = await self.config.guild(channel.guild).supporter_roles()
+    #     everyone = discord.utils.get(channel.guild.roles, name="@everyone")
+    #     for role in roles:  # Supporter roles can no longer send messages
+    #         role = channel.guild.get_role(role)
+    #         await channel.set_permissions(role, send_messages=False, read_messages=True)
+    #     admin_roles = await self.config.guild(channel.guild).admin_roles()
+    #     for role in admin_roles:  # Admin roles can always send messages
+    #         role = channel.guild.get_role(role)
+    #         await channel.set_permissions(role, send_messages=True, read_messages=True)
+    #
+    #     await channel.set_permissions(everyone, send_messages=False, read_messages=True)  # Make sure this is still set
+    #     async with self.config.guild(channel.guild).locked_channels() as channels:
+    #         channels.append(channel.id)
+
+    async def channel_unlock(self, ctx, roles):
+        channel = ctx.channel
+        everyone = discord.utils.get(ctx.guild.roles, name="@everyone")
+        for role in roles:
+            role = ctx.guild.get_role(role)
+            await ctx.channel.set_permissions(role, send_messages=True, read_messages=True)
+
+        await ctx.channel.set_permissions(everyone, send_messages=False, read_messages=True)
+        async with self.config.guild(channel.guild).locked_channels() as channels:
+            channels.remove(channel.id)
 
     @checks.admin_or_permissions(manage_channels=True)
     @commands.group(name="channellock", aliases=["cl"])
@@ -191,4 +224,50 @@ class ChannelLock(commands.Cog):
         embed.add_field(name="Admin Roles", value="\n".join(admin))
         embed.add_field(name="Supporter Roles", value="\n".join(supporter))
         embed.add_field(name="Access Roles", value="\n".join(access))
+        await ctx.send(embed=embed)
+
+    @commands.command(name="lock", aliases=["lockchannel", "bd", "botdown"])
+    async def lock(self, ctx):
+        """Lock a channel."""
+        channel = ctx.channel
+        if channel.id in await self.config.guild(ctx.guild).locked_channels():
+            return await ctx.send("This channel is already locked.")
+        if channel.id in await self.config.guild(ctx.guild).supporter_channels():
+            supporter = await self.config.guild(ctx.guild).supporter_roles()
+            await self.lock_channel(ctx, supporter)
+        elif channel.id in await self.config.guild(ctx.guild).regular_channels():
+            regular = await self.config.guild(ctx.guild).access_roles()
+            await self.lock_channel(ctx, regular)
+        else:
+            return await ctx.send("This channel is not configured to be locked.")
+        await ctx.message.delete()
+        embed = discord.Embed(color=discord.Color.red())
+        embed.set_image(url="https://images-ext-2.discordapp.net/external/t_M1DmChdr41B8ToGTz33lYC6sgcfrdBnmJ1JUC-3Gc"
+                            "/https/cdn-longterm.mee6.xyz/plugins/commands/images/807830259990659082"
+                            "/eae16de41f090e04456f64527383a4667e0b4af6890921b0f8a1e75745c03634.png")
+        await ctx.send(embed=embed)
+
+    @commands.command(name="unlock", aliases=["unlockchannel", "bu", "botup"])
+    async def unlock(self, ctx):
+        """"Unlock a channel."""
+        channel = ctx.channel
+        if channel.id not in await self.config.guild(ctx.guild).locked_channels():
+            return await ctx.send("This channel is not locked.")
+        if channel.id in await self.config.guild(ctx.guild).supporter_channels():
+            supporter = await self.config.guild(ctx.guild).supporter_roles()
+            if not supporter:
+                return await ctx.send("This channel is locked to supporter roles, but no supporter roles are set.")
+            await self.channel_unlock(ctx, supporter)
+        elif channel.id in await self.config.guild(ctx.guild).regular_channels():
+            regular = await self.config.guild(ctx.guild).access_roles()
+            if not regular:
+                return await ctx.send("This channel is locked to regular roles, but no regular roles are set.")
+            await self.channel_unlock(ctx, regular)
+        else:
+            return await ctx.send("This channel is not configured to be locked.")
+        await ctx.message.delete()
+        embed = discord.Embed(color=discord.Color.green())
+        embed.set_image(url="https://images-ext-1.discordapp.net/external/I15CBNrZmW5xRduY55EKJ__7Xl08cgodIDKy8dmPEqs"
+                            "/https/cdn-longterm.mee6.xyz/plugins/commands/images/807830259990659082"
+                            "/2688e7415c95ebd1094e8aa5b0e80b033dca17153b6730ef37ccae5837c36d8f.png")
         await ctx.send(embed=embed)
