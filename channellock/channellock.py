@@ -19,6 +19,8 @@ class ChannelLock(commands.Cog):
             "supporter_roles": [],
             "locked_channels": [],
             "access_roles": [],
+            "lock_image": "",
+            "unlock_image": "",
         }
         self.config.register_guild(**default_guild)
 
@@ -39,21 +41,6 @@ class ChannelLock(commands.Cog):
         await ctx.channel.set_permissions(everyone, send_messages=False, read_messages=True)
         async with self.config.guild(ctx.guild).locked_channels() as channels:
             channels.append(ctx.channel.id)
-
-    # async def supporter_lock(self, channel: discord.TextChannel):
-    #     roles = await self.config.guild(channel.guild).supporter_roles()
-    #     everyone = discord.utils.get(channel.guild.roles, name="@everyone")
-    #     for role in roles:  # Supporter roles can no longer send messages
-    #         role = channel.guild.get_role(role)
-    #         await channel.set_permissions(role, send_messages=False, read_messages=True)
-    #     admin_roles = await self.config.guild(channel.guild).admin_roles()
-    #     for role in admin_roles:  # Admin roles can always send messages
-    #         role = channel.guild.get_role(role)
-    #         await channel.set_permissions(role, send_messages=True, read_messages=True)
-    #
-    #     await channel.set_permissions(everyone, send_messages=False, read_messages=True)  # Make sure this is still set
-    #     async with self.config.guild(channel.guild).locked_channels() as channels:
-    #         channels.append(channel.id)
 
     async def channel_unlock(self, ctx, roles):
         channel = ctx.channel
@@ -234,6 +221,36 @@ class ChannelLock(commands.Cog):
         embed.add_field(name="Access Roles", value="\n".join(access))
         await ctx.send(embed=embed)
 
+    @channellock.command(name="lockimage")
+    async def lock_image(self, ctx, url: str = None):
+        """Set the lock image. \nIf no URL is provided, the lock image will be removed."""
+        if not url:
+            await self.config.guild(ctx.guild).lock_image.set("")
+            return await ctx.send("Lock image removed.")
+        try:
+            embed = discord.Embed(color=discord.Color.red())
+            embed.set_image(url=url)
+            await ctx.send(embed=embed)
+        except discord.HTTPException:
+            return await ctx.send("Invalid URL.")
+        await self.config.guild(ctx.guild).lock_image.set(url)
+        await ctx.send("Lock image set.")
+
+    @channellock.command(name="unlockimage")
+    async def unlock_image(self, ctx, url: str = None):
+        """Set the unlock image. \nIf no URL is provided, the unlock image will be removed."""
+        if not url:
+            await self.config.guild(ctx.guild).unlock_image.set("")
+            return await ctx.send("Unlock image removed.")
+        try:
+            embed = discord.Embed(color=discord.Color.green())
+            embed.set_image(url=url)
+            await ctx.send(embed=embed)
+        except discord.HTTPException:
+            return await ctx.send("Invalid URL.")
+        await self.config.guild(ctx.guild).unlock_image.set(url)
+        await ctx.send("Unlock image set.")
+
     @commands.command(name="lock", aliases=["lockchannel", "bd", "botdown"])
     async def lock(self, ctx):
         """Lock a channel."""
@@ -249,13 +266,15 @@ class ChannelLock(commands.Cog):
         else:
             return await ctx.send("This channel is not configured to be locked.")
         await ctx.message.delete()
-        embed = discord.Embed(color=discord.Color.red())
-        embed.set_image(url="https://images-ext-2.discordapp.net/external/t_M1DmChdr41B8ToGTz33lYC6sgcfrdBnmJ1JUC-3Gc"
-                            "/https/cdn-longterm.mee6.xyz/plugins/commands/images/807830259990659082"
-                            "/eae16de41f090e04456f64527383a4667e0b4af6890921b0f8a1e75745c03634.png")
-        await ctx.send(embed=embed)
+        image = await self.config.guild(ctx.guild).lock_image()
+        if image:
+            embed = discord.Embed(color=discord.Color.red())
+            embed.set_image(url=image)
+            await ctx.send(embed=embed)
+        else:
+            await ctx.send("Channel locked.")
 
-    @commands.command(name="unlock", aliases=["unlockchannel", "bu", "botup"])
+    @commands.command(name="unlock", aliases=["unlockchannel", "bu", "botup", "bbo", "botbackonline"])
     async def unlock(self, ctx):
         """"Unlock a channel."""
         channel = ctx.channel
@@ -274,8 +293,10 @@ class ChannelLock(commands.Cog):
         else:
             return await ctx.send("This channel is not configured to be locked.")
         await ctx.message.delete()
-        embed = discord.Embed(color=discord.Color.green())
-        embed.set_image(url="https://images-ext-1.discordapp.net/external/I15CBNrZmW5xRduY55EKJ__7Xl08cgodIDKy8dmPEqs"
-                            "/https/cdn-longterm.mee6.xyz/plugins/commands/images/807830259990659082"
-                            "/2688e7415c95ebd1094e8aa5b0e80b033dca17153b6730ef37ccae5837c36d8f.png")
-        await ctx.send(embed=embed)
+        image = await self.config.guild(ctx.guild).unlock_image()
+        if image:
+            embed = discord.Embed(color=discord.Color.green())
+            embed.set_image(url=image)
+            await ctx.send(embed=embed)
+        else:
+            await ctx.send("Channel unlocked.")
