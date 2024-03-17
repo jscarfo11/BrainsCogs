@@ -1,6 +1,9 @@
 import discord
 import asyncio
 
+from discord.ext.commands import Context
+from discord.ext.commands._types import BotT
+
 from redbot.core import commands, Config, checks
 from redbot.core.utils.predicates import MessagePredicate
 
@@ -18,6 +21,11 @@ class ChannelLock(commands.Cog):
             "access_roles": [],
         }
         self.config.register_guild(**default_guild)
+
+    async def cog_check(self, ctx: Context[BotT]) -> bool:
+        value = (await self.bot.is_owner(ctx.author)
+                 or await self.bot.is_admin(ctx.author) or await self.bot.is_mod(ctx.author))
+        return value
 
     async def lock_channel(self, ctx, roles):
         everyone = discord.utils.get(ctx.guild.roles, name="@everyone")
