@@ -1,5 +1,5 @@
-from .switchcodes import switchcodes
+from .switchcodes import SwitchCodes
+
 
 async def setup(bot):
-    cog = switchcodes
-    bot.add_cog(switchcodes(bot))
+    await bot.add_cog(SwitchCodes(bot))

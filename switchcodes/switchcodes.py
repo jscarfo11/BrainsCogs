@@ -2,7 +2,7 @@ import discord
 from redbot.core import Config, commands
 
 
-class switchcodes(commands.Cog):
+class SwitchCodes(commands.Cog):
     """Store and retrieve Nintendo Switch friend codes."""
     
     def __init__(self, bot):
