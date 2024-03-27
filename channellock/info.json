@@ -1,6 +1,6 @@
 {
     "author" : ["brains"],
-    "install_msg" : "Thank you for installing ChannelLock!",
+    "install_msg" : "Thank you for installing ChannelLock! Please make sure to read the documentation to understand how to use this cog.",
     "name" : "ChannelLock",
     "hidden" : false,
     "disabled" : false,

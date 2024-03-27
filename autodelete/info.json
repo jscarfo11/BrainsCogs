@@ -1,6 +1,6 @@
 {
     "author" : ["brains"],
-    "install_msg" : "Thank you for installing AutoDelete!",
+    "install_msg" : "Thank you for installing AutoDelete! Get started with `[p]help autodelete`.",
     "name" : "AutoDelete",
     "hidden" : false,
     "disabled" : false,
