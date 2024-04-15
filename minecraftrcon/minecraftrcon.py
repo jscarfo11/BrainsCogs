@@ -164,5 +164,7 @@ class MinecraftRCON(commands.Cog):
         await ctx.send("Config cleared successfully.")
 
 
+
+
 async def setup(bot):
-    await bot.add_cog(Minecraft(bot))
+    await bot.add_cog(MinecraftRCON(bot))
