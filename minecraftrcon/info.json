@@ -1,0 +1,11 @@
+{
+    "author" : ["brains"],
+    "install_msg" : "Thank you for installing Miencraft! Please make sure to read the documentation to understand how to use this cog.",
+    "name" : "Minecraft",
+    "hidden" : false,
+    "disabled" : false,
+    "short" : "Certain minecraft commands",
+    "description" : "A more customizable tool that allows you to have more control over the lock command",
+    "tags" : ["lock, channel, moderation"],
+    "end_user_data_statement": "This cog does not store any end user data."
+}
