@@ -2,7 +2,7 @@
 Speak
 ================
 
-This cog allows you to talk as the bot within a server.
+This cog allows you to talk as the bot within a server. All of the commands in this cog are restricted to server admins only.
 
 .. note::
 
