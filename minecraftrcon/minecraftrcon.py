@@ -206,19 +206,12 @@ class MinecraftRCON(commands.Cog):
         """Ping the server to check if it's online."""
         await ctx.typing()
         host = await self.config.guild(ctx.guild).host()
-        host = "192.3.27.77"
-        client = PINGClient(host, port=25565, proto_num=0) # try this
-        await ctx.send(host)
-        await ctx.send(client)
-
-        await ctx.send("Pinging server...")
+        client = PINGClient(host, port=25565, proto_num=0)
         try:
             await ctx.send(f"Server is online. Response time: {client.ping()}ms")
         except ConnectionRefusedError as e:
             await ctx.send("Server is offline.")
-            await ctx.send(e)
-        except Exception as e:
-            await ctx.send("An error occurred. Please try again later.")
+
 
     @rcon.command()
     async def players(self, ctx):
