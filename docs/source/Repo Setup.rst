@@ -1,6 +1,6 @@
-.. _installation:
+.. _Repo Setup:
 
-Installation
+Repo Setup
 ------------
 
 To use these cogs, make sure `downloader` is loaded with::

@@ -16,7 +16,7 @@ Contents
 
 .. toctree::
 
-    installation
+    Repo Setup
     AutoDelete
     ChannelLock
     MinecraftRCON
