@@ -3,18 +3,15 @@
 Installation
 ------------
 
-To use these cogs, make sure `downloader` is loaded with:
-.. code-block::
+To use these cogs, make sure `downloader` is loaded with::
 
-        [p]load downloader
+    [p]load downloader
 
-Then, you can install the repository with:
-.. code-block::
+Then, you can install the repository with::
 
     [p]repo add brains-cogs https://github.com/King0fBrains/BrainsCogs
 
-Now, anytime you want to install a cog from this repository, you can use:
-.. code-block::
+Now, anytime you want to install a cog from this repository, you can use::
 
     [p]install brains-cogs <cog_name>
 
