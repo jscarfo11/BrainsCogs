@@ -27,7 +27,7 @@ class MinecraftRCON(commands.Cog):
 
     @rcon.command()
     async def run(self, ctx, *, command):
-        """Run an RCON command on the server."""
+        """Run a minecraft command on the server using the RCON protocol."""
         admins = await self.config.guild(ctx.guild).admins()
 
         if ctx.author.id not in admins:
@@ -65,7 +65,7 @@ class MinecraftRCON(commands.Cog):
 
     @setup.command()
     async def host(self, ctx, host: str):
-        """Set the host for the RCON connection."""
+        """Set the host for the minecraft server."""
         admins = await self.config.guild(ctx.guild).admins()
         if ctx.author.id not in admins:
             return await ctx.send("You do not have permission to run this command.")
@@ -76,7 +76,7 @@ class MinecraftRCON(commands.Cog):
 
     @setup.command()
     async def port(self, ctx, port):
-        """Set the port for the RCON connection."""
+        """Set the port for the minecraft server."""
 
         admins = await self.config.guild(ctx.guild).admins()
         if ctx.author.id not in admins:
@@ -101,7 +101,7 @@ class MinecraftRCON(commands.Cog):
 
     @setup.command()
     async def channel(self, ctx, channel: discord.TextChannel):
-        """Set the channel for RCON commands."""
+        """Set the channel for RCON messages."""
         admins = await self.config.guild(ctx.guild).admins()
         if ctx.author.id not in admins:
             return await ctx.send("You do not have permission to run this command.")
@@ -224,9 +224,8 @@ class MinecraftRCON(commands.Cog):
     async def on_message(self, message):
         if message.channel.id not in await self.config.guild(message.guild).rcon_channel():
             return
+
         if message.author.bot:
-            return
-        if message.channel.id != await self.config.guild(message.guild).rcon_channel():
             return
         if message.content.startswith("!rcon"):
             return await message.channel.send("Please don't use the RCON commands in this channel.")
@@ -246,7 +245,7 @@ class MinecraftRCON(commands.Cog):
         try:
             if rcon.login(password):
                 password = "**********"
-                msg = "say " + msg + "Sent by" + message.author.name
+                msg = "say " + "[DISCORD] " + f"[{message.author.name}] " + msg
                 resp = rcon.command(msg).strip("[0m")
                 if resp in self.valid_responses:
                     await message.add_reaction("✅")
@@ -262,7 +261,7 @@ class MinecraftRCON(commands.Cog):
             await message.channel.send(f"An error occurred. Please try again later.")
             raise e
 
-    @commands.group()
+    @rcon.group()
     async def whitelist(self, ctx):
         """Whitelist management commands."""
         pass
@@ -280,7 +279,7 @@ class MinecraftRCON(commands.Cog):
             try:
                 if rcon.login(password):
                     resp = rcon.command(f"whitelist add {user}").strip("[0m")
-                    if resp in self.valid_responses:
+                    if resp in self.valid_responses or resp == f"Added {user} to the whitelist":
                         await ctx.send(f"{user} has been added to the whitelist.")
                         whitelist[str(ctx.author.id)] = user
                     else:
@@ -305,7 +304,7 @@ class MinecraftRCON(commands.Cog):
             try:
                 if rcon.login(password):
                     resp = rcon.command(f"whitelist remove {user}").strip("[0m")
-                    if resp in self.valid_responses:
+                    if resp in self.valid_responses or resp == f"Removed {user} from the whitelist":
                         await ctx.send(f"{user} has been removed from the whitelist.")
                         whitelist.pop(str(ctx.author.id))
                     else:
@@ -316,7 +315,7 @@ class MinecraftRCON(commands.Cog):
                 await ctx.send("Failed to connect to RCON. Check that the server is online and the RCON port is "
                                "correct.")
 
-    @whitelist.command()
+    @whitelist.command(aliases=["showlist", "list"])
     async def show(self, ctx):
         """Display the whitelist."""
         async with self.config.guild(ctx.guild).whitelist() as whitelist:
