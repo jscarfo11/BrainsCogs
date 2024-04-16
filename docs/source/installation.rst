@@ -1,6 +1,3 @@
-Usage
-=====
-
 .. _installation:
 
 Installation
