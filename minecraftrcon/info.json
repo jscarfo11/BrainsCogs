@@ -2,6 +2,7 @@
     "author" : ["brains"],
     "install_msg" : "Thank you for installing Miencraft! Please make sure to read the documentation to understand how to use this cog.",
     "name" : "Minecraft",
+    "requirements": ["mctools"],
     "hidden" : false,
     "disabled" : false,
     "short" : "Certain minecraft commands",
