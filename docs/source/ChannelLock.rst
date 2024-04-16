@@ -20,7 +20,7 @@ After following the instructions in :doc:`installation`, run the below commands 
 Commands
 --------
 ^^^^^^^
-channellock
+channellock (cl)
 ^^^^^^^
 
     This command is the main command for the cog. It allows you to manage all of the settings for the channel lock.
@@ -59,11 +59,11 @@ channellock
             [p]channellock channel add #channel
             [p]channellock channel remove #channel
             [p]channellock channel list
-            [p]channellock role add @role
-            [p]channellock role remove @role
-            [p]channellock role list
-            [p]channellock lockimage url
-            [p]channellock unlockimage url
+            [p]cl role add @role
+            [p]cl role remove @role
+            [p]cl role list
+            [p]cl lockimage url
+            [p]cl unlockimage url
 
 
 ^^^^^^^^^
