@@ -188,7 +188,8 @@ class MinecraftRCON(commands.Cog):
     async def clear_config(self, ctx):
         """Clear the RCON config."""
         admins = await self.config.guild(ctx.guild).admins()
-        if ctx.author.id not in admins and not await self.bot.is_admin(ctx.author) and not await self.bot.is_owner(ctx.author):
+        if ctx.author.id not in admins and not await self.bot.is_admin(ctx.author) and not await self.bot.is_owner(
+                ctx.author):
             return await ctx.send("You do not have permission to run this command.")
         check = MessagePredicate.yes_or_no()
         try:
@@ -209,9 +210,8 @@ class MinecraftRCON(commands.Cog):
         client = PINGClient(host, port=25565, proto_num=0)
         try:
             await ctx.send(f"Server is online. Response time: {client.ping()}ms")
-        except ConnectionRefusedError as e:
-            await ctx.send("Server is offline.")
-
+        except ConnectionRefusedError:
+            await ctx.send("Server is offline. This command may be having issues. Use `[p]rcon players` to check.")
 
     @rcon.command()
     async def players(self, ctx):
@@ -293,6 +293,16 @@ class MinecraftRCON(commands.Cog):
                 embed.add_field(name=k, value=v)
             await ctx.send(embed=embed)
 
+    @whitelist.command()
+    async def override(self, ctx, user: discord.Member, user_override: str):
+        """Override a user's whitelist entry."""
+        async with self.config.guild(ctx.guild).admins() as admins:
+            if ctx.author.id not in admins:
+                return await ctx.send("You do not have permission to run this command.")
+        async with self.config.guild(ctx.guild).whitelist() as whitelist:
+            whitelist[str(user.id)] = user_override
+            await ctx.send(f"{user.name}'s whitelist entry has been overridden with {user_override}.")
+
     @commands.Cog.listener()
     async def on_message(self, message):
         if message.channel.id not in await self.config.guild(message.guild).rcon_channel():
@@ -333,6 +343,7 @@ class MinecraftRCON(commands.Cog):
         except Exception as e:
             await message.channel.send(f"An error occurred. Please try again later.")
             raise e
+
 
 async def setup(bot):
     await bot.add_cog(MinecraftRCON(bot))
