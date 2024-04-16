@@ -4,3 +4,7 @@
 *.patch
 .idea/vcs.xml
 .idea/vcs.xml
+.idea/workspace.xml
+.idea/
+
+
