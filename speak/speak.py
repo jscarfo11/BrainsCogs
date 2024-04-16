@@ -134,8 +134,7 @@ class Speak(commands.Cog):
         """Open a tunnel to a channel."""
         user = ctx.author.id
         if user in self.tunnel_users:
-            await ctx.author.send("You already have a tunnel open.")
-            return
+            return await ctx.author.send("You already have a tunnel open.")
         dm_msg = ("You have opened a tunnel to this channel. "
                   "\nAnything you say will be sent to the channel you have chosen. "
                   "\nYou will also receive any messages sent to that channel. "

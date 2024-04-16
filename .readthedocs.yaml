@@ -8,13 +8,6 @@ build:
     post_create_environment:
       - python3 -m pip install sphinx_rtd_theme
 
-#python:
-#  install:
-#    - method: pip
-#      path: .
-#      extra_requirements:
-#          - doc
-#          - sphinx-rtd-theme
 
 
 sphinx:
