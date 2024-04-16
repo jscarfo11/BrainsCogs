@@ -14,7 +14,7 @@ python:
           - sphinx-rtd-theme
       jobs:
         post_create_environment:
-          - python -m pip install sphinx_rtd_theme
+          - python3 -m pip install sphinx_rtd_theme
 
 sphinx:
   configuration: docs/source/conf.py
