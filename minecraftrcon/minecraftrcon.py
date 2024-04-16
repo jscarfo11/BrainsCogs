@@ -41,6 +41,9 @@ class MinecraftRCON(commands.Cog):
         host = await self.config.guild(ctx.guild).host()
         port = await self.config.guild(ctx.guild).port()
         password = await self.config.guild(ctx.guild).password()
+        if not host or not port or not password:
+            await ctx.send("Please set up the RCON connection first.")
+            return
         rcon = RCONClient(host, port=port)
         try:
             if rcon.login(password):
@@ -207,6 +210,8 @@ class MinecraftRCON(commands.Cog):
         """Ping the server to check if it's online."""
         await ctx.typing()
         host = await self.config.guild(ctx.guild).host()
+        if not host:
+            return await ctx.send("Please set up the RCON connection first.")
         client = PINGClient(host, port=25565, proto_num=0)
         try:
             await ctx.send(f"Server is online. Response time: {client.ping()}ms")
@@ -218,7 +223,8 @@ class MinecraftRCON(commands.Cog):
         """Get the players on the server."""
         host = await self.config.guild(ctx.guild).host()
         query = QUERYClient(host)
-
+        if not host:
+            return await ctx.send("Please set up the RCON connection first.")
         try:
             stats = query.get_full_stats()
             embed = discord.Embed(title=f"Players on {host}", color=await ctx.embed_color())
