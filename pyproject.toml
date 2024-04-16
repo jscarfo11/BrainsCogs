@@ -1,0 +1,15 @@
+[tool.black]
+line-length = 99
+
+[tool.isort]
+profile = "black"
+line_length = 99
+
+[tool.setuptools]
+py-modules = ["autodelete", "channellock", "minecraftrcon", "speak", "switchcodes"]
+
+[project]
+name = "test"
+version = "0.1.0"
+description = "A test project"
+authors = [{name = "test", email = "test@test.com"}]

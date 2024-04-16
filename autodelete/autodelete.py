@@ -20,9 +20,7 @@ class AutoDelete(commands.Cog):
         }
         self.config.register_guild(**default_guild)
 
-        # async def cog_check(self, ctx: Context[BotT]) -> bool:
 
-    #     return await ctx.bot.is_admin(ctx.author)
 
     @commands.Cog.listener()
     async def on_message(self, message):
