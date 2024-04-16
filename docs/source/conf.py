@@ -12,7 +12,7 @@ version = '0.1.0'
 # -- General configuration
 
 extensions = [
-    #'sphinx-rtd-theme',
+    'python_docs_theme',
     'sphinx.ext.duration',
     'sphinx.ext.doctest',
     'sphinx.ext.autodoc',
@@ -31,7 +31,7 @@ templates_path = ['_templates']
 
 # -- Options for HTML output
 
-html_theme = 'sphinx_rtd_theme'
+html_theme = 'python_docs_theme'
 
 # -- Options for EPUB output
 epub_show_urls = 'footnote'
