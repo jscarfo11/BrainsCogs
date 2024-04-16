@@ -12,4 +12,4 @@ py-modules = ["autodelete", "channellock", "minecraftrcon", "speak", "switchcode
 name = "test"
 version = "0.1.0"
 description = "A test project"
-authors = ["Author "]
+authors = [{name = "test", email = "test@test.com"}]
