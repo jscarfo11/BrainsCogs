@@ -206,7 +206,7 @@ class MinecraftRCON(commands.Cog):
         """Ping the server to check if it's online."""
         await ctx.typing()
         host = await self.config.guild(ctx.guild).host()
-        client = PINGClient(host)
+        client = PINGClient(host, port=25565, proto_num=0)
         await ctx.send("Pinging server...")
         try:
             await ctx.send(f"Server is online. Response time: {client.ping()}ms")
