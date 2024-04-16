@@ -1,4 +1,6 @@
-[project]
-name = "Brains Cogs"
-authors = [{name = "Brains", email = "jscarfo@purdue.edu"}]
-dynamic = ["version", "description"]
+[tool.black]
+line-length = 99
+
+[tool.isort]
+profile = "black"
+line_length = 99
