@@ -1,20 +1,11 @@
-# Minimal makefile for Sphinx documentation
-#
+PYTHON ?= python3
 
-# You can set these variables from the command line, and also
-# from the environment for the first two.
-SPHINXOPTS    ?=
-SPHINXBUILD   ?= sphinx-build
-SOURCEDIR     = source
-BUILDDIR      = build
+ROOT_DIR:=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 
-# Put it first so that "make" without argument is like "make help".
-help:
-	@$(SPHINXBUILD) -M help "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
+reformat:
+	$(PYTHON) -m black $(ROOT_DIR)
+	$(PYTHON) -m isort $(ROOT_DIR)
+	$(PYTHON) -m autoflake --recursive --in-place --remove-all-unused-imports $(ROOT_DIR)
 
-.PHONY: help Makefile
-
-# Catch-all target: route all unknown targets to Sphinx using the new
-# "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).
-%: Makefile
-	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
+install:
+	pip install -U -r requirements.txt
