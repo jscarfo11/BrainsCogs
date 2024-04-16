@@ -10,3 +10,7 @@ py-modules = ["autodelete", "channellock", "minecraftrcon", "speak", "switchcode
 
 [project]
 name = "test"
+version = "0.1.0"
+description = "A test project"
+authors = ["Author "]
+license = "MIT"
