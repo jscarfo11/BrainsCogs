@@ -1,5 +1,5 @@
 Welcome to Brains Cogs documentation!
-===================================
+===================================================
 
 **Brains Cogs** is a place where you can find a collection of cogs for
 `Red-DiscordBot <https://github.com/Cog-Creators/Red-DiscordBot>`_.
@@ -20,6 +20,6 @@ Contents
     AutoDelete
     ChannelLock
     MinecraftRCON
-    speak
+    Speak
     SwitchCodes
     faq
