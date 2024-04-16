@@ -32,10 +32,10 @@ rcon setup
 
     These three commands are required to be run before any other commands can be used. ::
 
-    - rcon setup chat <channel>: Sets the channel to emulate the server chat.
-    - rcon setup admin <user> : Allows for server admins to give users the ability to interact with the server.
-    - rcon setup showsettings: Shows the current settings of the server, without the password.
-    - rcon setup clear_config: Clears the current settings of the server. This command will ask for confirmation before clearing the settings.
+    - rcon setup chat <channel> # Sets the channel to emulate the server chat.
+    - rcon setup admin <user> # Allows for server admins to give users the ability to interact with the server.
+    - rcon setup showsettings # Shows the current settings of the server, without the password.
+    - rcon setup clear_config # Clears the current settings of the server. This command will ask for confirmation before clearing the settings.
 
     ``rcon setup admin <user>`` is the only command restricted to users with the admin role. This command allows for server admins to give users the ability to interact with the server. All other commands are restricted to users with RCON admin role.
 
@@ -64,10 +64,10 @@ rcon whitelist
     This command is used to whitelist users on the Minecraft server. It links the users discord account to their Minecraft username. This allows for messages sent in the server chat to be linked to the users discord account.
     It four subcommands: ::
 
-    - rcon whitelist add <minecraft_username>: Adds the user to the whitelist.
-    - rcon whitelist remove <minecraft_username>: Removes the user from the whitelist.
-    - rcon whitelist show: Shows the current whitelist.
-    - rcon whitelist link <minecraft_username> <discord_user>: Links the discord user to the Minecraft username.
+    - rcon whitelist add <minecraft_username> # Adds the user to the whitelist.
+    - rcon whitelist remove <minecraft_username> # Removes the user from the whitelist.
+    - rcon whitelist show # Shows the current whitelist.
+    - rcon whitelist link <minecraft_username> <discord_user> # Links the discord user to the Minecraft username.
 
 
     Any user can add themselves to the whitelist. However, only users with the admin role can remove users from the whitelist or link discord users to Minecraft usernames. Even if a user gets banned from the server, they will still be linked to their discord account. This is to prevent users from impersonating other users.
