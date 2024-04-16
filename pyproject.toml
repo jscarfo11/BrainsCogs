@@ -7,3 +7,6 @@ line_length = 99
 
 [tool.setuptools]
 py-modules = ["autodelete", "channellock", "minecraftrcon", "speak", "switchcodes"]
+
+[project]
+name = "test"
