@@ -299,8 +299,8 @@ class MinecraftRCON(commands.Cog):
                 embed.add_field(name=k, value=v)
             await ctx.send(embed=embed)
 
-    @whitelist.command()
-    async def override(self, ctx, user: discord.Member, user_override: str):
+    @whitelist.command(aliases=["override"])
+    async def link(self, ctx, user: discord.Member, user_override: str):
         """Override a user's whitelist entry."""
         async with self.config.guild(ctx.guild).admins() as admins:
             if ctx.author.id not in admins:

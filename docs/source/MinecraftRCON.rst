@@ -67,7 +67,7 @@ rcon whitelist
     - rcon whitelist add <minecraft_username> # Adds the user to the whitelist.
     - rcon whitelist remove <minecraft_username> # Removes the user from the whitelist.
     - rcon whitelist show # Shows the current whitelist.
-    - rcon whitelist link <minecraft_username> <discord_user> # Links the discord user to the Minecraft username.
+    - rcon whitelist link <discord_user> <minecraft_username> # Links the discord user to the Minecraft username.
 
 
     Any user can add themselves to the whitelist. However, only users with the admin role can remove users from the whitelist or link discord users to Minecraft usernames. Even if a user gets banned from the server, they will still be linked to their discord account. This is to prevent users from impersonating other users.
@@ -77,7 +77,7 @@ rcon whitelist
     [p]rcon whitelist add Notch
     This links the user "Notch" to the discord account that ran the command. ::
 
-    [p]rcon whitelist link Notch @Notch#1234
+    [p]rcon whitelist link @Notch#1234 Notch
 
     This links the user "Notch" to the discord user @Notch#1234. This exists so users who are already on the whitelist can have their discord account linked to their Minecraft username.
 
