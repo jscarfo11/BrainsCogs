@@ -22,4 +22,4 @@ Contents
     MinecraftRCON
     Speak
     SwitchCodes
-    faq
+    FAQ
