@@ -1,6 +1,6 @@
 {
   "author": [ "brains_" ],
-  "install_msg": "Thanks for installing my repo!",
+  "install_msg": "Thanks for installing my repo! Please refer to the [wiki](https://brainscogs.readthedocs.io/en/latest/index.html) for more information on how to use the cogs.",
   "name": "BrainsCogs.",
   "short": "Personal Bot Cogs.",
   "description": "Cogs made and modified for personal use.",
