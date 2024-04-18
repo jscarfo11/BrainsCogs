@@ -17,23 +17,23 @@ class Pokedex(commands.Cog):
         pass
 
     @pokedex.command()
-    async def pokemon(self, ctx, pokemon):
+    async def pokemon(self, ctx, pokemon: str):
         """Get some basic information about a Pokemon by name or ID."""
         try:
             pokemon = int(pokemon)
         except ValueError:
-            pass
+            pokemon = pokemon.lower()
 
         try:
             pokemon = pb.pokemon(pokemon)
-            assert pokemon.id
+            num = pokemon.id
 
         except requests.exceptions.HTTPError:  # Fuzzy search
             return await ctx.send("Pokemon not found. Please check your spelling and try again.")
         except AttributeError:  # Fuzzy search
             return await ctx.send("Pokemon not found. Please check your spelling and try again.")
 
-        embed = discord.Embed(title=f"#{pokemon.id}: {pokemon.name.capitalize()}", color=await ctx.embed_color())
+        embed = discord.Embed(title=f"#{num}: {pokemon.name.capitalize()}", color=await ctx.embed_color())
         embed.set_image(url=pokemon.sprites.front_default)
         embed.add_field(name="Height", value=f"{pokemon.height}m")
         embed.add_field(name="Weight", value=f"{pokemon.weight}kg")
@@ -47,6 +47,9 @@ class Pokedex(commands.Cog):
                 abilities.append(ability.ability.name.capitalize())
         embed.add_field(name="Abilities", value=", ".join(abilities))
         embed.add_field(name="Base Stats", value=" / ".join([f"{s.base_stat}" for s in pokemon.stats]))
+        # evolution = pb.evolution_chain(pokemon.id).chain.evolves_to[0].species.name
+        # embed.add_field(name="Evolution", value=evolution.capitalize())
+
         await ctx.send(embed=embed)
 
     @pokedex.command()
@@ -65,7 +68,7 @@ class Pokedex(commands.Cog):
     async def id(self, ctx, pokemon: str):
         """Get the ID of a Pokemon by name."""
         try:
-            pokemon = pb.pokemon(pokemon)
+            pokemon = pb.pokemon(pokemon.lower())
             assert pokemon.id
         except requests.exceptions.HTTPError:
             return await ctx.send("Pokemon not found. Please check your spelling and try again.")
@@ -77,7 +80,7 @@ class Pokedex(commands.Cog):
     async def ability(self, ctx, ability: str):
         """Get information about an ability by name."""
         try:
-            ability = pb.ability(ability)
+            ability = pb.ability(ability.lower())
             assert ability.id
         except requests.exceptions.HTTPError:
             return await ctx.send("Ability not found. Please check your spelling and try again.")
@@ -96,10 +99,10 @@ class Pokedex(commands.Cog):
         await ctx.send(embed=embed)
 
     @pokedex.command()
-    async def move(self, ctx, move):
+    async def move(self, ctx, move: str):
         """Get information about a move by name."""
         try:
-            move = pb.move(move)
+            move = pb.move(move.lower())
             assert move.id
         except requests.exceptions.HTTPError:
             return await ctx.send("Move not found. Please check your spelling and try again.")
@@ -124,8 +127,12 @@ class Pokedex(commands.Cog):
         await ctx.send(embed=embed)
 
     @pokedex.command(aliases=["moves", "movepool", "move_set"])
-    async def moveset(self, ctx, pokemon):
+    async def moveset(self, ctx, pokemon: str):
         """Get the moveset of a Pokemon by name or ID."""
+        try:
+            pokemon = int(pokemon)
+        except ValueError:
+            pokemon = pokemon.lower()
         try:
             pokemon = pb.pokemon(pokemon)
             assert pokemon.id
@@ -177,9 +184,6 @@ class Pokedex(commands.Cog):
         embed.set_thumbnail(url=item.sprites.default)
         await construct_embed(ctx, index, embed)
         await ctx.send(embed=embed)
-
-    @pokedex.command()
-    async def
 
 
 async def setup(bot):
