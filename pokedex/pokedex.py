@@ -28,9 +28,7 @@ class Pokedex(commands.Cog):
             pokemon = pb.pokemon(pokemon)
             num = pokemon.id
 
-        except requests.exceptions.HTTPError:  # Fuzzy search
-            return await ctx.send("Pokemon not found. Please check your spelling and try again.")
-        except AttributeError:  # Fuzzy search
+        except requests.exceptions.HTTPError or AttributeError:  # Fuzzy search
             return await ctx.send("Pokemon not found. Please check your spelling and try again.")
 
         embed = discord.Embed(title=f"#{num}: {pokemon.name.capitalize()}", color=await ctx.embed_color())
@@ -58,9 +56,7 @@ class Pokedex(commands.Cog):
         try:
             pokemon = pb.pokemon(num)
             assert pokemon.id
-        except requests.exceptions.HTTPError:  # Fuzzy search
-            return await ctx.send("Pokemon not found. Please check your spelling and try again.")
-        except AttributeError:  # Fuzzy search
+        except requests.exceptions.HTTPError or AttributeError:  # Fuzzy search
             return await ctx.send("Pokemon not found. Please check your spelling and try again.")
         await ctx.send(f"#{pokemon.id}: {pokemon.name.capitalize()}")
 
@@ -70,9 +66,7 @@ class Pokedex(commands.Cog):
         try:
             pokemon = pb.pokemon(pokemon.lower())
             assert pokemon.id
-        except requests.exceptions.HTTPError:
-            return await ctx.send("Pokemon not found. Please check your spelling and try again.")
-        except AttributeError:
+        except requests.exceptions.HTTPError or AttributeError:
             return await ctx.send("Pokemon not found. Please check your spelling and try again.")
         await ctx.send(f"#{pokemon.id}: {pokemon.name.capitalize()}")
 
@@ -82,10 +76,8 @@ class Pokedex(commands.Cog):
         try:
             ability = pb.ability(ability.lower())
             assert ability.id
-        except requests.exceptions.HTTPError:
+        except requests.exceptions.HTTPError or  AttributeError:
             return await ctx.send("Ability not found. Please check your spelling and try again.")
-        except AttributeError:
-            return await ctx.send("Ability not found. Please check your spelling and try again. A")
         embed = discord.Embed(title=f"{ability.name.capitalize()}", color=await ctx.embed_color())
         learns = []
         for i in ability.pokemon:
@@ -104,9 +96,7 @@ class Pokedex(commands.Cog):
         try:
             move = pb.move(move.lower())
             assert move.id
-        except requests.exceptions.HTTPError:
-            return await ctx.send("Move not found. Please check your spelling and try again.")
-        except AttributeError:
+        except requests.exceptions.HTTPError or AttributeError:
             return await ctx.send("Move not found. Please check your spelling and try again.")
         embed = discord.Embed(title=f"{move.name.capitalize()}", color=await ctx.embed_color())
         learn = []
@@ -136,9 +126,7 @@ class Pokedex(commands.Cog):
         try:
             pokemon = pb.pokemon(pokemon)
             assert pokemon.id
-        except requests.exceptions.HTTPError:
-            return await ctx.send("Pokemon not found. Please check your spelling and try again.")
-        except AttributeError:
+        except requests.exceptions.HTTPError or AttributeError:
             return await ctx.send("Pokemon not found. Please check your spelling and try again.")
         moves = []
         for i in pokemon.moves:
@@ -171,9 +159,7 @@ class Pokedex(commands.Cog):
         try:
             item = pb.item(item)
             assert item.id
-        except requests.exceptions.HTTPError:
-            return await ctx.send("Item not found. Please check your spelling and try again.")
-        except AttributeError:
+        except requests.exceptions.HTTPError or AttributeError:  # Fuzzy search
             return await ctx.send("Item not found. Please check your spelling and try again.")
         embed = discord.Embed(title=f"{item.name.capitalize()}", color=await ctx.embed_color())
         index = {
