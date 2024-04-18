@@ -1,0 +1,12 @@
+{
+    "author" : ["brains"],
+    "install_msg" : "Thank you for installing Pokedex! Please make sure to read the documentation to understand how to use this cog.",
+    "name" : "Pokedex",
+    "requirements": ["pokebase", "requests"],
+    "hidden" : false,
+    "disabled" : false,
+    "short" : "A cog for the PokeAPI database.",
+    "description" : "AA cog that allows you to search for Pokemon information using the PokeAPI.",
+    "tags" : ["pokemon", "pokedex", "API"],
+    "end_user_data_statement": "This cog does not store any end user data."
+}
