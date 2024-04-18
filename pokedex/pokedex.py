@@ -1,7 +1,6 @@
 import discord
 import requests
 import pokebase as pb
-import textwrap
 
 from redbot.core import commands
 from .helpers import construct_embed
@@ -87,7 +86,7 @@ class Pokedex(commands.Cog):
             "Flavor Text": ability.flavor_text_entries[1].flavor_text,
             "Learned By": ", \n".join(learns)
         }
-        await construct_embed(ctx, index, embed)
+        await construct_embed(index, embed)
         await ctx.send(embed=embed)
 
     @pokedex.command()
@@ -112,7 +111,7 @@ class Pokedex(commands.Cog):
             'Learned By': ", \n".join(learn)
 
         }
-        await construct_embed(ctx, index, embed)
+        await construct_embed(index, embed)
 
         await ctx.send(embed=embed)
 
@@ -168,8 +167,10 @@ class Pokedex(commands.Cog):
             'Effect': item.effect_entries[0].short_effect
         }
         embed.set_thumbnail(url=item.sprites.default)
-        await construct_embed(ctx, index, embed)
+        await construct_embed(index, embed)
         await ctx.send(embed=embed)
+
+
 
 
 async def setup(bot):
