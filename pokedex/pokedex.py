@@ -157,6 +157,30 @@ class Pokedex(commands.Cog):
 
         await ctx.send(embed=embed)
 
+    @pokedex.command()
+    async def item(self, ctx, item):
+        """Get information about an item by name."""
+        item = item.lower().replace(" ", "-")
+        try:
+            item = pb.item(item)
+            assert item.id
+        except requests.exceptions.HTTPError:
+            return await ctx.send("Item not found. Please check your spelling and try again.")
+        except AttributeError:
+            return await ctx.send("Item not found. Please check your spelling and try again.")
+        embed = discord.Embed(title=f"{item.name.capitalize()}", color=await ctx.embed_color())
+        index = {
+            'Category': item.category.name.capitalize(),
+            'Cost': item.cost,
+            'Effect': item.effect_entries[0].short_effect
+        }
+        embed.set_thumbnail(url=item.sprites.default)
+        await construct_embed(ctx, index, embed)
+        await ctx.send(embed=embed)
+
+    @pokedex.command()
+    async def
+
 
 async def setup(bot):
     await bot.add_cog(Pokedex(bot))
