@@ -3,7 +3,7 @@ import requests
 import pokebase as pb
 
 from redbot.core import commands
-from .helpers import construct_embed
+from .helpers import construct_embed, get_sprite, fuzzy_search
 
 
 class Pokedex(commands.Cog):
@@ -22,13 +22,20 @@ class Pokedex(commands.Cog):
             pokemon = int(pokemon)
         except ValueError:
             pokemon = pokemon.lower()
-
         try:
-            pokemon = pb.pokemon(pokemon)
-            num = pokemon.id
+            result = pb.pokemon(pokemon)
+            assert result.id
 
-        except requests.exceptions.HTTPError or AttributeError:  # Fuzzy search
-            return await ctx.send("Pokemon not found. Please check your spelling and try again.")
+        except requests.exceptions.HTTPError:  # Fuzzy search
+            return await ctx.send(f"Pokemon {pokemon} not found. Please check your spelling and try again.")
+        except AttributeError:
+            new_pokemon = await fuzzy_search(ctx, pokemon)
+            if not new_pokemon:
+                return await ctx.send("Please try again.")
+            result = pb.pokemon(new_pokemon)
+
+        pokemon = result
+        num = pokemon.id
 
         embed = discord.Embed(title=f"#{num}: {pokemon.name.capitalize()}", color=await ctx.embed_color())
         embed.set_image(url=pokemon.sprites.front_default)
@@ -55,7 +62,7 @@ class Pokedex(commands.Cog):
         try:
             pokemon = pb.pokemon(num)
             assert pokemon.id
-        except requests.exceptions.HTTPError or AttributeError:  # Fuzzy search
+        except (requests.exceptions.HTTPError, AttributeError):  # Fuzzy search
             return await ctx.send("Pokemon not found. Please check your spelling and try again.")
         await ctx.send(f"#{pokemon.id}: {pokemon.name.capitalize()}")
 
@@ -65,7 +72,7 @@ class Pokedex(commands.Cog):
         try:
             pokemon = pb.pokemon(pokemon.lower())
             assert pokemon.id
-        except requests.exceptions.HTTPError or AttributeError:
+        except (requests.exceptions.HTTPError, AttributeError):
             return await ctx.send("Pokemon not found. Please check your spelling and try again.")
         await ctx.send(f"#{pokemon.id}: {pokemon.name.capitalize()}")
 
@@ -75,7 +82,7 @@ class Pokedex(commands.Cog):
         try:
             ability = pb.ability(ability.lower())
             assert ability.id
-        except requests.exceptions.HTTPError or  AttributeError:
+        except (requests.exceptions.HTTPError, AttributeError):
             return await ctx.send("Ability not found. Please check your spelling and try again.")
         embed = discord.Embed(title=f"{ability.name.capitalize()}", color=await ctx.embed_color())
         learns = []
@@ -95,7 +102,7 @@ class Pokedex(commands.Cog):
         try:
             move = pb.move(move.lower())
             assert move.id
-        except requests.exceptions.HTTPError or AttributeError:
+        except (requests.exceptions.HTTPError, AttributeError):
             return await ctx.send("Move not found. Please check your spelling and try again.")
         embed = discord.Embed(title=f"{move.name.capitalize()}", color=await ctx.embed_color())
         learn = []
@@ -125,7 +132,7 @@ class Pokedex(commands.Cog):
         try:
             pokemon = pb.pokemon(pokemon)
             assert pokemon.id
-        except requests.exceptions.HTTPError or AttributeError:
+        except (requests.exceptions.HTTPError, AttributeError):
             return await ctx.send("Pokemon not found. Please check your spelling and try again.")
         moves = []
         for i in pokemon.moves:
@@ -158,7 +165,7 @@ class Pokedex(commands.Cog):
         try:
             item = pb.item(item)
             assert item.id
-        except requests.exceptions.HTTPError or AttributeError:  # Fuzzy search
+        except (requests.exceptions.HTTPError, AttributeError):  # Fuzzy search
             return await ctx.send("Item not found. Please check your spelling and try again.")
         embed = discord.Embed(title=f"{item.name.capitalize()}", color=await ctx.embed_color())
         index = {
@@ -169,6 +176,22 @@ class Pokedex(commands.Cog):
         embed.set_thumbnail(url=item.sprites.default)
         await construct_embed(index, embed)
         await ctx.send(embed=embed)
+
+    @pokedex.command()
+    async def sprite(self, ctx, pokemon: str, shiny: bool = False, gender: str = "M", front: bool = True):
+        """Get the sprite of a Pokemon by name or ID."""
+        try:
+            pokemon = int(pokemon)
+        except ValueError:
+            pokemon = pokemon.lower()
+        try:
+            pokemon = pb.pokemon(pokemon)
+            assert pokemon.id
+        except (requests.exceptions.HTTPError, AttributeError):  # Fuzzy search
+            return await ctx.send("Pokemon not found. Please check your spelling and try again.")
+        sprite = await get_sprite(pokemon, shiny, gender, front)
+
+        await ctx.send(sprite)
 
 
 
