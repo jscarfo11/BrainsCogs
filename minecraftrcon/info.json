@@ -1,12 +1,12 @@
 {
     "author" : ["brains"],
-    "install_msg" : "Thank you for installing Miencraft! Please make sure to read the documentation to understand how to use this cog.",
+    "install_msg" : "Thank you for installing minecraft! Please make sure to read the documentation to understand how to use this cog.",
     "name" : "Minecraft",
     "requirements": ["mctools"],
     "hidden" : false,
     "disabled" : false,
     "short" : "Certain minecraft commands",
-    "description" : "A more customizable tool that allows you to have more control over the lock command",
-    "tags" : ["lock, channel, moderation"],
+    "description" : "Allows you to run minecraft commands through the RCON protocol.",
+    "tags" : ["minecraft", "commands", "moderation", "whitelist"],
     "end_user_data_statement": "This cog does not store any end user data."
 }

@@ -6,6 +6,6 @@
     "disabled" : false,
     "short" : "Locks certain user from sending messages",
     "description" : "A more customizable tool that allows you to have more control over the lock command",
-    "tags" : ["lock, channel, moderation"],
+    "tags" : ["lock", "channel", "moderation"],
     "end_user_data_statement": "This cog does not store any end user data."
 }
