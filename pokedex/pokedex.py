@@ -3,13 +3,18 @@ import requests
 import pokebase as pb
 
 from redbot.core import commands
-from .helpers import construct_embed, get_sprite, get_pokemon
+from .helpers import construct_embed, get_sprite, get_pokemon, get_all_matches
 
 
 class Pokedex(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.fuzzy_list = []
 
+    @commands.Cog.listener()  # Get the list of Pokemon names for fuzzy search
+    async def on_cog_add(self, cog):
+        wrong = pb.pokemon("")
+        self.fuzzy_list = [i.name for i in wrong.results]
     @commands.group()
     async def pokedex(self, ctx):
         """Get information about Pokemon."""
@@ -18,18 +23,19 @@ class Pokedex(commands.Cog):
     @pokedex.command(aliases=["search"])
     async def pokemon(self, ctx, pokemon: str):
         """Get some basic information about a Pokemon by name or ID."""
-        pokemon = await get_pokemon(ctx, pokemon)
+        pokemon = await get_pokemon(ctx, pokemon, self.fuzzy_list)  # Get the Pokemon object
 
         if pokemon is None:
             return
 
-
+        # Construct the embed
         embed = discord.Embed(title=f"#{pokemon.order}: {pokemon.name.capitalize()}", color=await ctx.embed_color())
         embed.set_image(url=pokemon.sprites.front_default)
         embed.add_field(name="Height", value=f"{pokemon.height}m")
         embed.add_field(name="Weight", value=f"{pokemon.weight}kg")
         embed.add_field(name="Base Experience", value=pokemon.base_experience)
         embed.add_field(name="Types", value=", ".join([t.type.name.capitalize() for t in pokemon.types]))
+        embed.add_field(name="Searchable By", value=f'ID: `{pokemon.id}` | Name: `{pokemon.name.capitalize()}`')
         abilities = []
         for ability in pokemon.abilities:
             if ability.is_hidden:
@@ -38,30 +44,27 @@ class Pokedex(commands.Cog):
                 abilities.append(ability.ability.name.capitalize())
         embed.add_field(name="Abilities", value=", ".join(abilities))
         embed.add_field(name="Base Stats", value=" / ".join([f"{s.base_stat}" for s in pokemon.stats]))
-        # evolution = pb.evolution_chain(pokemon.id).chain.evolves_to[0].species.name
-        # embed.add_field(name="Evolution", value=evolution.capitalize())
 
         await ctx.send(embed=embed)
 
     @pokedex.command()
-    async def name(self, ctx, num: int):
-        """Get the name of a Pokemon by ID."""
+    async def find(self, ctx, search: str):
+        """Get the name of a Pokemon required by the API."""
         try:
-            pokemon = pb.pokemon(num)
-            assert pokemon.id
+            pokemon = pb.pokemon(int(search))
+            return await ctx.send(f"#{pokemon.id}: {pokemon.name.capitalize()}")  # If the search is an ID
         except (requests.exceptions.HTTPError, AttributeError):  # Fuzzy search
             return await ctx.send("Pokemon not found. Please check your spelling and try again.")
-        await ctx.send(f"#{pokemon.id}: {pokemon.name.capitalize()}")
+        except ValueError:
+            options = await get_all_matches(search, self.fuzzy_list)
+        text = "\n".join(options)
 
-    @pokedex.command()
-    async def id(self, ctx, pokemon: str):
-        """Get the ID of a Pokemon by name."""
-        try:
-            pokemon = pb.pokemon(pokemon.lower())
-            assert pokemon.id
-        except (requests.exceptions.HTTPError, AttributeError):
-            return await ctx.send("Pokemon not found. Please check your spelling and try again.")
-        await ctx.send(f"#{pokemon.id}: {pokemon.name.capitalize()}")
+        if len(text) > 2024:
+            return await ctx.send("Too many results to display. Please refine your search.")
+
+        embed = discord.Embed(title="Pokemon Name Search", color=await ctx.embed_color())
+        embed.add_field(name="Results", value=text)
+        await ctx.send(embed=embed)
 
     @pokedex.command()
     async def ability(self, ctx, ability: str):
@@ -179,8 +182,6 @@ class Pokedex(commands.Cog):
         sprite = await get_sprite(pokemon, shiny, gender, front)
 
         await ctx.send(sprite)
-
-
 
 
 async def setup(bot):
