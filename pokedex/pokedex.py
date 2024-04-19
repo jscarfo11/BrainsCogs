@@ -3,7 +3,7 @@ import requests
 import pokebase as pb
 
 from redbot.core import commands
-from .helpers import construct_embed, get_sprite, fuzzy_search
+from .helpers import construct_embed, get_sprite, get_pokemon
 
 
 class Pokedex(commands.Cog):
@@ -15,29 +15,16 @@ class Pokedex(commands.Cog):
         """Get information about Pokemon."""
         pass
 
-    @pokedex.command()
+    @pokedex.command(aliases=["search"])
     async def pokemon(self, ctx, pokemon: str):
         """Get some basic information about a Pokemon by name or ID."""
-        try:
-            pokemon = int(pokemon)
-        except ValueError:
-            pokemon = pokemon.lower()
-        try:
-            result = pb.pokemon(pokemon)
-            assert result.id
+        pokemon = await get_pokemon(ctx, pokemon)
 
-        except requests.exceptions.HTTPError:  # Fuzzy search
-            return await ctx.send(f"Pokemon {pokemon} not found. Please check your spelling and try again.")
-        except AttributeError:
-            new_pokemon = await fuzzy_search(ctx, pokemon)
-            if not new_pokemon:
-                return await ctx.send("Please try again.")
-            result = pb.pokemon(new_pokemon)
+        if pokemon is None:
+            return
 
-        pokemon = result
-        num = pokemon.id
 
-        embed = discord.Embed(title=f"#{num}: {pokemon.name.capitalize()}", color=await ctx.embed_color())
+        embed = discord.Embed(title=f"#{pokemon.order}: {pokemon.name.capitalize()}", color=await ctx.embed_color())
         embed.set_image(url=pokemon.sprites.front_default)
         embed.add_field(name="Height", value=f"{pokemon.height}m")
         embed.add_field(name="Weight", value=f"{pokemon.weight}kg")
