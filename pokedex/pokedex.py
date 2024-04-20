@@ -158,7 +158,7 @@ class Pokedex(commands.Cog):
         item = item.lower().replace(" ", "-")
         try:
             item = pb.item(item)
-            assert item.id
+            assert item.id`
         except (requests.exceptions.HTTPError, AttributeError):  # Fuzzy search
             return await ctx.send("Item not found. Please check your spelling and try again.")
         embed = discord.Embed(title=f"{item.name.capitalize()}", color=await ctx.embed_color())
@@ -174,15 +174,9 @@ class Pokedex(commands.Cog):
     @pokedex.command()
     async def sprite(self, ctx, pokemon: str, shiny: bool = False, gender: str = "M", front: bool = True):
         """Get the sprite of a Pokemon by name or ID."""
-        try:
-            pokemon = int(pokemon)
-        except ValueError:
-            pokemon = pokemon.lower()
-        try:
-            pokemon = pb.pokemon(pokemon)
-            assert pokemon.id
-        except (requests.exceptions.HTTPError, AttributeError):  # Fuzzy search
-            return await ctx.send("Pokemon not found. Please check your spelling and try again.")
+        pokemon = await get_pokemon(ctx, pokemon, self.fuzzy_list)
+        if pokemon is None:
+            return
         sprite = await get_sprite(pokemon, shiny, gender, front)
 
         await ctx.send(sprite)
