@@ -120,7 +120,7 @@ pokedex sprite
 ^^^^^^^^^^^^^^^^^
     This command is used to search for a sprite of a pokemon. It will return a link to the sprite. If the pokemon is not found, it will return an error message. Its aliases are ``image`` and ``img``.
 
-    It has optional arguments of ``shiny``, ``gender``, and ``front``. If the shiny argument is set to anything other than ``0`` or ``False``, it will return the shiny sprite. If the gender argument is set to `F` or `female`, it will return the female sprite. If the front argument is set to ``B`` or ``back``, it will return the back sprite. Otherwise, it will return the front sprite.
+    It has optional arguments of ``shiny``, ``gender``, and ``front``. If the shiny argument is set to anything other than ``0`` or ``False``, it will return the shiny sprite. If the gender argument is set to ``F`` or ``female``, it will return the female sprite. If the front argument is set to ``B`` or ``back``, it will return the back sprite. Otherwise, it will return the front sprite.
 
     Usage: ::
 
@@ -129,6 +129,8 @@ pokedex sprite
         [p]pokedex img <pokemon> <shiny> <gender> <front>
 
     Examples: ::
+
         [p]pokedex sprite bulbasaur
         [p]pokedex img charmander shiny F B
         [p]pokedex image 1 True
+
