@@ -15,13 +15,14 @@ class Pokedex(commands.Cog):
     async def on_cog_add(self, cog):
         wrong = pb.pokemon("")
         self.fuzzy_list = [i.name for i in wrong.results]
-    @commands.group()
+
+    @commands.group(aliases=["dex", "pd"])
     async def pokedex(self, ctx):
         """Get information about Pokemon."""
         pass
 
-    @pokedex.command(aliases=["search"])
-    async def pokemon(self, ctx, pokemon: str):
+    @pokedex.command(aliases=["poke", "pokemon", "p"])
+    async def search(self, ctx, pokemon: str):
         """Get some basic information about a Pokemon by name or ID."""
         pokemon = await get_pokemon(ctx, pokemon, self.fuzzy_list)  # Get the Pokemon object
 
