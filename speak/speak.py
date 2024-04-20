@@ -113,8 +113,8 @@ class Speak(commands.Cog):
         print("Edit handler ended")
 
     @commands.admin()
-    @commands.command(name="say")
-    async def say(self, ctx: commands.Context, channel: Optional[discord.TextChannel], *, message: str):
+    @commands.command(aliases=["say"])
+    async def speak(self, ctx: commands.Context, channel: Optional[discord.TextChannel], *, message: str):
         """Say a message in a channel."""
         if channel is None:  # If channel is a number then it will automatically convert to a channel object
             channel = ctx.channel

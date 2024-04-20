@@ -23,7 +23,7 @@ class Pokedex(commands.Cog):
 
     @pokedex.command(aliases=["poke", "pokemon", "p"])
     async def search(self, ctx, pokemon: str):
-        """Get some basic information about a Pokemon by name or ID."""
+        """Get information about a Pokemon by name or ID."""
         pokemon = await get_pokemon(ctx, pokemon, self.fuzzy_list)  # Get the Pokemon object
 
         if pokemon is None:
@@ -185,7 +185,13 @@ class Pokedex(commands.Cog):
 
     @pokedex.command(aliases=["sprites", "pic", "image"])
     async def sprite(self, ctx, pokemon: str, shiny: bool = False, gender: str = "M", front: bool = True):
-        """Get the sprite of a Pokemon by name or ID."""
+        """
+        Get the sprite of a Pokemon by name or ID.
+
+        `[p]pokedex sprite pikachu True F False`
+        would get the back sprite for a shiny Pikachu.
+        Check the wiki for more information.
+        """
         pokemon = await get_pokemon(ctx, pokemon, self.fuzzy_list)
         if pokemon is None:
             return
