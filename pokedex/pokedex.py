@@ -3,7 +3,7 @@ import requests
 import pokebase as pb
 
 from redbot.core import commands
-from .helpers import construct_embed, get_sprite, get_pokemon, get_all_matches, fuzzy_move
+from .helpers import construct_embed, get_sprite, get_pokemon, get_all_matches, fuzzy_move, fuzzy_ability
 
 
 class Pokedex(commands.Cog):
@@ -71,10 +71,15 @@ class Pokedex(commands.Cog):
     async def ability(self, ctx, ability: str):
         """Get information about an ability by name."""
         try:
-            ability = pb.ability(ability.lower())
-            assert ability.id
+            result = pb.ability(ability.lower())
+            assert result.id
         except (requests.exceptions.HTTPError, AttributeError):
-            return await ctx.send("Ability not found. Please check your spelling and try again.")
+            result = await fuzzy_ability(ctx, ability)
+            if result:
+                result = pb.ability(result)
+            else:
+                return
+        ability = result
         embed = discord.Embed(title=f"{ability.name.capitalize()}", color=await ctx.embed_color())
         learns = []
         for i in ability.pokemon:
@@ -82,7 +87,7 @@ class Pokedex(commands.Cog):
         index = {
             'Effect': ability.effect_entries[1].short_effect,
             "Flavor Text": ability.flavor_text_entries[1].flavor_text,
-            "Learned By": ", \n".join(learns)
+            "Possessed by": ", \n".join(learns)
         }
         await construct_embed(index, embed)
         await ctx.send(embed=embed)
@@ -152,7 +157,7 @@ class Pokedex(commands.Cog):
 
         await ctx.send(embed=embed)
 
-    @pokedex.command()
+    @pokedex.command(aliases=["i"])
     async def item(self, ctx, item):
         """Get information about an item by name."""
         item = item.lower().replace(" ", "-")

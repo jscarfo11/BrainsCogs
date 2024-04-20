@@ -115,3 +115,22 @@ async def fuzzy_move(ctx: commands.Context, move: str):
     else:
         await ctx.send("Sorry, I couldn't find the right move. Please try again.")
         return None
+
+
+async def fuzzy_ability(ctx: commands.Context, ability: str):
+    ability_list = [i.name for i in pokebase.ability('w').results]
+    x = rapidfuzz.process.extractOne(ability, ability_list, processor=utils.default_process, score_cutoff=80,
+                                     scorer=fuzz.WRatio)
+    if x is None:
+        await ctx.send("Ability not found. Please check your spelling and try again.")
+        return None
+    message = await ctx.send(f"Did you mean {x[0].strip().capitalize()}?")
+    start_adding_reactions(message, ReactionPredicate.YES_OR_NO_EMOJIS)
+    pred = ReactionPredicate.yes_or_no(message, ctx.author)
+    await ctx.bot.wait_for("reaction_add", check=pred)
+    if pred.result is True:
+        return x[0]
+    else:
+        await ctx.send("Sorry, I couldn't find the right ability. Please try again.")
+        return None
+
