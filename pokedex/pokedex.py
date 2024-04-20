@@ -3,7 +3,7 @@ import requests
 import pokebase as pb
 
 from redbot.core import commands
-from .helpers import construct_embed, get_sprite, get_pokemon, get_all_matches, fuzzy_move, fuzzy_ability
+from .helpers import construct_embed, get_sprite, get_pokemon, get_all_matches, fuzzy_move, fuzzy_ability, fuzzy_item
 
 
 class Pokedex(commands.Cog):
@@ -162,10 +162,17 @@ class Pokedex(commands.Cog):
         """Get information about an item by name."""
         item = item.lower().replace(" ", "-")
         try:
-            item = pb.item(item)
+            result = pb.item(item)
             assert item.id
-        except (requests.exceptions.HTTPError, AttributeError):  # Fuzzy search
+            item = result
+        except requests.exceptions.HTTPError:  # Fuzzy search
             return await ctx.send("Item not found. Please check your spelling and try again.")
+        except AttributeError:
+            result = await fuzzy_item(ctx, item)
+            if result:
+                item = pb.item(result)
+            else:
+                return
         embed = discord.Embed(title=f"{item.name.capitalize()}", color=await ctx.embed_color())
         index = {
             'Category': item.category.name.capitalize(),
