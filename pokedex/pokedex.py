@@ -3,7 +3,7 @@ import requests
 import pokebase as pb
 
 from redbot.core import commands
-from .helpers import construct_embed, get_sprite, get_pokemon, get_all_matches
+from .helpers import construct_embed, get_sprite, get_pokemon, get_all_matches, fuzzy_move
 
 
 class Pokedex(commands.Cog):
@@ -90,10 +90,19 @@ class Pokedex(commands.Cog):
     async def move(self, ctx, move: str):
         """Get information about a move by name."""
         try:
-            move = pb.move(move.lower())
-            assert move.id
-        except (requests.exceptions.HTTPError, AttributeError):
+            result = pb.move(move.lower())
+            assert result.id
+        except requests.exceptions.HTTPError:
             return await ctx.send("Move not found. Please check your spelling and try again.")
+        except AttributeError:
+            move = await fuzzy_move(ctx, move)
+            if move:
+                result = pb.move(move)
+            else:
+                return
+
+        move = result
+
         embed = discord.Embed(title=f"{move.name.capitalize()}", color=await ctx.embed_color())
         learn = []
         for i in move.learned_by_pokemon:

@@ -97,3 +97,21 @@ async def get_all_matches(pokemon: str, pokemon_list: list[str]):
         mon = pokebase.pokemon(x)
         final.append("".join([f"{mon.name.capitalize()} ({mon.id})"]))
     return final
+
+
+async def fuzzy_move(ctx: commands.Context, move: str):
+    move_list = [i.name for i in pokebase.move('w').results]
+    x = rapidfuzz.process.extractOne(move, move_list, processor=utils.default_process, score_cutoff=80,
+                                     scorer=fuzz.WRatio)
+    if x is None:
+        await ctx.send("Move not found. Please check your spelling and try again.")
+        return None
+    message = await ctx.send(f"Did you mean {x[0].strip().capitalize()}?")
+    start_adding_reactions(message, ReactionPredicate.YES_OR_NO_EMOJIS)
+    pred = ReactionPredicate.yes_or_no(message, ctx.author)
+    await ctx.bot.wait_for("reaction_add", check=pred)
+    if pred.result is True:
+        return x[0]
+    else:
+        await ctx.send("Sorry, I couldn't find the right move. Please try again.")
+        return None
