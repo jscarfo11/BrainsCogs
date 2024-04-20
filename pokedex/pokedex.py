@@ -3,46 +3,40 @@ import requests
 import pokebase as pb
 
 from redbot.core import commands
-from .helpers import construct_embed, get_sprite, fuzzy_search
+from .helpers import construct_embed, get_sprite, get_pokemon, get_all_matches, fuzzy_move, fuzzy_ability, fuzzy_item
 
 
 class Pokedex(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.fuzzy_list = []
 
-    @commands.group()
+    @commands.Cog.listener()  # Get the list of Pokemon names for fuzzy search
+    async def on_cog_add(self, cog):
+        wrong = pb.pokemon("")
+        self.fuzzy_list = [i.name for i in wrong.results]
+
+    @commands.group(aliases=["dex", "pd"])
     async def pokedex(self, ctx):
         """Get information about Pokemon."""
         pass
 
-    @pokedex.command()
-    async def pokemon(self, ctx, pokemon: str):
+    @pokedex.command(aliases=["poke", "pokemon", "p"])
+    async def search(self, ctx, pokemon: str):
         """Get some basic information about a Pokemon by name or ID."""
-        try:
-            pokemon = int(pokemon)
-        except ValueError:
-            pokemon = pokemon.lower()
-        try:
-            result = pb.pokemon(pokemon)
-            assert result.id
+        pokemon = await get_pokemon(ctx, pokemon, self.fuzzy_list)  # Get the Pokemon object
 
-        except requests.exceptions.HTTPError:  # Fuzzy search
-            return await ctx.send(f"Pokemon {pokemon} not found. Please check your spelling and try again.")
-        except AttributeError:
-            new_pokemon = await fuzzy_search(ctx, pokemon)
-            if not new_pokemon:
-                return await ctx.send("Please try again.")
-            result = pb.pokemon(new_pokemon)
+        if pokemon is None:
+            return
 
-        pokemon = result
-        num = pokemon.id
-
-        embed = discord.Embed(title=f"#{num}: {pokemon.name.capitalize()}", color=await ctx.embed_color())
+        # Construct the embed
+        embed = discord.Embed(title=f"#{pokemon.order}: {pokemon.name.capitalize()}", color=await ctx.embed_color())
         embed.set_image(url=pokemon.sprites.front_default)
         embed.add_field(name="Height", value=f"{pokemon.height}m")
         embed.add_field(name="Weight", value=f"{pokemon.weight}kg")
         embed.add_field(name="Base Experience", value=pokemon.base_experience)
         embed.add_field(name="Types", value=", ".join([t.type.name.capitalize() for t in pokemon.types]))
+        embed.add_field(name="Searchable By", value=f'ID: `{pokemon.id}` | Name: `{pokemon.name.capitalize()}`')
         abilities = []
         for ability in pokemon.abilities:
             if ability.is_hidden:
@@ -51,39 +45,41 @@ class Pokedex(commands.Cog):
                 abilities.append(ability.ability.name.capitalize())
         embed.add_field(name="Abilities", value=", ".join(abilities))
         embed.add_field(name="Base Stats", value=" / ".join([f"{s.base_stat}" for s in pokemon.stats]))
-        # evolution = pb.evolution_chain(pokemon.id).chain.evolves_to[0].species.name
-        # embed.add_field(name="Evolution", value=evolution.capitalize())
 
         await ctx.send(embed=embed)
 
     @pokedex.command()
-    async def name(self, ctx, num: int):
-        """Get the name of a Pokemon by ID."""
+    async def find(self, ctx, search: str):
+        """Get the name of a Pokemon required by the API."""
         try:
-            pokemon = pb.pokemon(num)
-            assert pokemon.id
+            pokemon = pb.pokemon(int(search))
+            return await ctx.send(f"#{pokemon.id}: {pokemon.name.capitalize()}")  # If the search is an ID
         except (requests.exceptions.HTTPError, AttributeError):  # Fuzzy search
             return await ctx.send("Pokemon not found. Please check your spelling and try again.")
-        await ctx.send(f"#{pokemon.id}: {pokemon.name.capitalize()}")
+        except ValueError:
+            options = await get_all_matches(search, self.fuzzy_list)
+        text = "\n".join(options)
 
-    @pokedex.command()
-    async def id(self, ctx, pokemon: str):
-        """Get the ID of a Pokemon by name."""
-        try:
-            pokemon = pb.pokemon(pokemon.lower())
-            assert pokemon.id
-        except (requests.exceptions.HTTPError, AttributeError):
-            return await ctx.send("Pokemon not found. Please check your spelling and try again.")
-        await ctx.send(f"#{pokemon.id}: {pokemon.name.capitalize()}")
+        if len(text) > 2024:
+            return await ctx.send("Too many results to display. Please refine your search.")
 
-    @pokedex.command()
+        embed = discord.Embed(title="Pokemon Name Search", color=await ctx.embed_color())
+        embed.add_field(name="Results", value=text)
+        await ctx.send(embed=embed)
+
+    @pokedex.command(aliases=["a"])
     async def ability(self, ctx, ability: str):
         """Get information about an ability by name."""
         try:
-            ability = pb.ability(ability.lower())
-            assert ability.id
+            result = pb.ability(ability.lower())
+            assert result.id
         except (requests.exceptions.HTTPError, AttributeError):
-            return await ctx.send("Ability not found. Please check your spelling and try again.")
+            result = await fuzzy_ability(ctx, ability)
+            if result:
+                result = pb.ability(result)
+            else:
+                return
+        ability = result
         embed = discord.Embed(title=f"{ability.name.capitalize()}", color=await ctx.embed_color())
         learns = []
         for i in ability.pokemon:
@@ -91,19 +87,28 @@ class Pokedex(commands.Cog):
         index = {
             'Effect': ability.effect_entries[1].short_effect,
             "Flavor Text": ability.flavor_text_entries[1].flavor_text,
-            "Learned By": ", \n".join(learns)
+            "Possessed by": ", \n".join(learns)
         }
         await construct_embed(index, embed)
         await ctx.send(embed=embed)
 
-    @pokedex.command()
+    @pokedex.command(aliases=["learns", "learn"])
     async def move(self, ctx, move: str):
         """Get information about a move by name."""
         try:
-            move = pb.move(move.lower())
-            assert move.id
-        except (requests.exceptions.HTTPError, AttributeError):
+            result = pb.move(move.lower())
+            assert result.id
+        except requests.exceptions.HTTPError:
             return await ctx.send("Move not found. Please check your spelling and try again.")
+        except AttributeError:
+            move = await fuzzy_move(ctx, move)
+            if move:
+                result = pb.move(move)
+            else:
+                return
+
+        move = result
+
         embed = discord.Embed(title=f"{move.name.capitalize()}", color=await ctx.embed_color())
         learn = []
         for i in move.learned_by_pokemon:
@@ -125,15 +130,9 @@ class Pokedex(commands.Cog):
     @pokedex.command(aliases=["moves", "movepool", "move_set"])
     async def moveset(self, ctx, pokemon: str):
         """Get the moveset of a Pokemon by name or ID."""
-        try:
-            pokemon = int(pokemon)
-        except ValueError:
-            pokemon = pokemon.lower()
-        try:
-            pokemon = pb.pokemon(pokemon)
-            assert pokemon.id
-        except (requests.exceptions.HTTPError, AttributeError):
-            return await ctx.send("Pokemon not found. Please check your spelling and try again.")
+        pokemon = await get_pokemon(ctx, pokemon, self.fuzzy_list)
+        if pokemon is None:
+            return
         moves = []
         for i in pokemon.moves:
             moves.append([i.move.name.capitalize(), i.version_group_details[0].level_learned_at, i])
@@ -158,15 +157,22 @@ class Pokedex(commands.Cog):
 
         await ctx.send(embed=embed)
 
-    @pokedex.command()
+    @pokedex.command(aliases=["i"])
     async def item(self, ctx, item):
         """Get information about an item by name."""
         item = item.lower().replace(" ", "-")
         try:
-            item = pb.item(item)
+            result = pb.item(item)
             assert item.id
-        except (requests.exceptions.HTTPError, AttributeError):  # Fuzzy search
+            item = result
+        except requests.exceptions.HTTPError:  # Fuzzy search
             return await ctx.send("Item not found. Please check your spelling and try again.")
+        except AttributeError:
+            result = await fuzzy_item(ctx, item)
+            if result:
+                item = pb.item(result)
+            else:
+                return
         embed = discord.Embed(title=f"{item.name.capitalize()}", color=await ctx.embed_color())
         index = {
             'Category': item.category.name.capitalize(),
@@ -177,23 +183,15 @@ class Pokedex(commands.Cog):
         await construct_embed(index, embed)
         await ctx.send(embed=embed)
 
-    @pokedex.command()
+    @pokedex.command(aliases=["sprites", "pic", "image"])
     async def sprite(self, ctx, pokemon: str, shiny: bool = False, gender: str = "M", front: bool = True):
         """Get the sprite of a Pokemon by name or ID."""
-        try:
-            pokemon = int(pokemon)
-        except ValueError:
-            pokemon = pokemon.lower()
-        try:
-            pokemon = pb.pokemon(pokemon)
-            assert pokemon.id
-        except (requests.exceptions.HTTPError, AttributeError):  # Fuzzy search
-            return await ctx.send("Pokemon not found. Please check your spelling and try again.")
+        pokemon = await get_pokemon(ctx, pokemon, self.fuzzy_list)
+        if pokemon is None:
+            return
         sprite = await get_sprite(pokemon, shiny, gender, front)
 
         await ctx.send(sprite)
-
-
 
 
 async def setup(bot):
