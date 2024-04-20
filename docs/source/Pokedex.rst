@@ -3,6 +3,7 @@ Pokedex
 ================
 
 This cog is a simple pokedex that allows users to search for pokemon information. It uses the pokeapi to get the information.
+
 .. note::
 
     This cog would not be possible without the pokeapi. You can find more information about the pokeapi at https://pokeapi.co/
