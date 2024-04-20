@@ -2,7 +2,7 @@
     "author" : ["brains"],
     "install_msg" : "Thank you for installing Pokedex! Please make sure to read the documentation to understand how to use this cog.",
     "name" : "Pokedex",
-    "requirements": ["pokebase", "requests"],
+    "requirements": ["pokebase", "requests", "rapidfuzz"],
     "hidden" : false,
     "disabled" : false,
     "short" : "A cog for the PokeAPI database.",
