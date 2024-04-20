@@ -158,7 +158,7 @@ class Pokedex(commands.Cog):
         item = item.lower().replace(" ", "-")
         try:
             item = pb.item(item)
-            assert item.id`
+            assert item.id
         except (requests.exceptions.HTTPError, AttributeError):  # Fuzzy search
             return await ctx.send("Item not found. Please check your spelling and try again.")
         embed = discord.Embed(title=f"{item.name.capitalize()}", color=await ctx.embed_color())
