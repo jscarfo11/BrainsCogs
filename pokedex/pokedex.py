@@ -67,7 +67,7 @@ class Pokedex(commands.Cog):
         embed.add_field(name="Results", value=text)
         await ctx.send(embed=embed)
 
-    @pokedex.command()
+    @pokedex.command(aliases=["a"])
     async def ability(self, ctx, ability: str):
         """Get information about an ability by name."""
         try:
@@ -92,7 +92,7 @@ class Pokedex(commands.Cog):
         await construct_embed(index, embed)
         await ctx.send(embed=embed)
 
-    @pokedex.command()
+    @pokedex.command(aliases=["learns", "learn"])
     async def move(self, ctx, move: str):
         """Get information about a move by name."""
         try:
@@ -176,7 +176,7 @@ class Pokedex(commands.Cog):
         await construct_embed(index, embed)
         await ctx.send(embed=embed)
 
-    @pokedex.command()
+    @pokedex.command(aliases=["sprites", "pic", "image"])
     async def sprite(self, ctx, pokemon: str, shiny: bool = False, gender: str = "M", front: bool = True):
         """Get the sprite of a Pokemon by name or ID."""
         pokemon = await get_pokemon(ctx, pokemon, self.fuzzy_list)
