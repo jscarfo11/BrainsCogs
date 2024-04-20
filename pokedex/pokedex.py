@@ -124,15 +124,9 @@ class Pokedex(commands.Cog):
     @pokedex.command(aliases=["moves", "movepool", "move_set"])
     async def moveset(self, ctx, pokemon: str):
         """Get the moveset of a Pokemon by name or ID."""
-        try:
-            pokemon = int(pokemon)
-        except ValueError:
-            pokemon = pokemon.lower()
-        try:
-            pokemon = pb.pokemon(pokemon)
-            assert pokemon.id
-        except (requests.exceptions.HTTPError, AttributeError):
-            return await ctx.send("Pokemon not found. Please check your spelling and try again.")
+        pokemon = await get_pokemon(ctx, pokemon, self.fuzzy_list)
+        if pokemon is None:
+            return
         moves = []
         for i in pokemon.moves:
             moves.append([i.move.name.capitalize(), i.version_group_details[0].level_learned_at, i])
