@@ -183,7 +183,7 @@ class Pokedex(commands.Cog):
         await construct_embed(index, embed)
         await ctx.send(embed=embed)
 
-    @pokedex.command(aliases=["sprites", "pic", "image"])
+    @pokedex.command(aliases=["sprites", "pic", "image", "img"])
     async def sprite(self, ctx, pokemon: str, shiny: bool = False, gender: str = "M", front: bool = True):
         """
         Get the sprite of a Pokemon by name or ID.
@@ -195,7 +195,7 @@ class Pokedex(commands.Cog):
         pokemon = await get_pokemon(ctx, pokemon, self.fuzzy_list)
         if pokemon is None:
             return
-        sprite = await get_sprite(pokemon, shiny, gender, front)
+        sprite = await get_sprite(pokemon, shiny, gender.upper(), front)
 
         await ctx.send(sprite)
 

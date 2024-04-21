@@ -20,19 +20,19 @@ After following the instructions in :doc:`installation`, run the below commands 
 Commands
 --------
 ^^^^^^^
-say
+speak
 ^^^^^^^
 
-    Speak as the bot in a server.
+    Speak as the bot in a server. The alias for this command is ``say``.
 
     Usage: ::
 
-        [p]say <channel[optional]> <message>
+        [p]speak <channel[optional]> <message>
 
     Examples: ::
 
-        [p]say channel-link Hello, World!
-        [p]say hi!
+        [p]speak channel-link Hello, World!
+        [p]speak hi!
         [p]say channel-id Welcome!
 
 

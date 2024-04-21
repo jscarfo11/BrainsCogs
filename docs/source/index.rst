@@ -20,6 +20,7 @@ Contents
     AutoDelete
     ChannelLock
     MinecraftRCON
+    Pokedex
     Speak
     SwitchCodes
     FAQ

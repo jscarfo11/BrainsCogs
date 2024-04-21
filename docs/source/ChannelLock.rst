@@ -20,10 +20,10 @@ After following the instructions in :doc:`installation`, run the below commands 
 Commands
 --------
 ^^^^^^^
-channellock (cl)
+channellock
 ^^^^^^^
 
-    This command is the main command for the cog. It allows you to manage all of the settings for the channel lock.
+    This command is the main command for the cog. It allows you to manage all of the settings for the channel lock. It has an alias of ``cl``.
 
     It has the following subcommands:
 

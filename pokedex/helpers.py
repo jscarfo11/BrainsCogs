@@ -22,23 +22,24 @@ async def construct_embed(index: dict, embed: discord.Embed):
 
 async def get_sprite(pokemon, shiny: bool, gender: str, front: bool) -> str:
     female = pokemon.sprites.front_female
+    male = ["M", "MALE"]
     if shiny:
-        if front and (gender == 'M' or female is None):
+        if front and (gender in male or female is None):
             return pokemon.sprites.front_shiny
         elif front:
             return pokemon.sprites.front_shiny_female
-        elif gender == 'M' or female is None:
+        elif gender in male or female is None:
             return pokemon.sprites.back_shiny
         else:
             return pokemon.sprites.back_shiny_female
 
     elif front:
-        if gender == 'M' or female is None:
+        if gender in male or female is None:
             return pokemon.sprites.front_default
         else:
             return pokemon.sprites.front_female
     else:
-        if gender == 'M' or female is None:
+        if gender in male or female is None:
             return pokemon.sprites.back_default
         else:
             return pokemon.sprites.back_female
