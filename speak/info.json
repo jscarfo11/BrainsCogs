@@ -1,12 +1,13 @@
 {
-  "author": [ "King0fBrains" ],
-  "install_msg": "Thanks for installing Speak!\nGet started with `[p]help Speak`.",
-  "name": "Speak",
-  "disabled": false,
-  "short": "Allows you to talk as the bot!",
-  "description": "My personal cog for talking as the bot! It draws inspiration from wanting to have commands from multiple cogs in one place. The cogs that this draws inspiration from are Laggron42's *Say* cog, Obi-Wan3's *Reply* cog, and NeuroAssassin's *editor* cog.",
-  "tags": ["fun", "utility"],
-  "requirements": [],
-  "hidden": false,
-  "end_user_data_statement": "This cog does not store any End User Data."
+    "author": [ "King0fBrains" ],
+    "install_msg": "Thanks for installing Speak!\nGet started with `[p]help Speak`.",
+    "name": "Speak",
+    "disabled": false,
+    "short": "Allows you to talk as the bot!",
+    "description": "My personal cog for talking as the bot! It draws inspiration from wanting to have commands from multiple cogs in one place. The cogs that this draws inspiration from are Laggron42's *Say* cog, Obi-Wan3's *Reply* cog, and NeuroAssassin's *editor* cog.",
+    "tags": ["fun", "utility"],
+    "requirements": [],
+    "hidden": false,
+    "min_bot_version": "3.5.0",
+    "end_user_data_statement": "This cog does not store any End User Data."
 }

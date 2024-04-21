@@ -8,5 +8,6 @@
     "short" : "A cog for the PokeAPI database.",
     "description" : "AA cog that allows you to search for Pokemon information using the PokeAPI.",
     "tags" : ["pokemon", "pokedex", "API"],
+    "min_bot_version": "3.5.0",
     "end_user_data_statement": "This cog does not store any end user data."
 }

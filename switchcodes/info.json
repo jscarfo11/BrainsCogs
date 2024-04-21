@@ -8,7 +8,7 @@
     "required_cogs": {},
     "requirements": [],
     "tags": ["commission", "social"],
-    "min_bot_version": "3.4.14",
+    "min_bot_version": "3.5.0",
     "hidden": false,
     "disabled": false,
     "type": "COG"
