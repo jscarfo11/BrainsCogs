@@ -11,5 +11,6 @@
     "min_bot_version": "3.5.0",
     "hidden": false,
     "disabled": false,
+    "min_python_version": [3, 8, 0],
     "type": "COG"
 }

@@ -8,5 +8,6 @@
     "description" : "A more customizable tool that allows you to have more control over the lock command",
     "tags" : ["lock", "channel", "moderation"],
     "min_bot_version": "3.5.0",
+    "min_python_version": [3, 8, 0],
     "end_user_data_statement": "This cog does not store any end user data."
 }

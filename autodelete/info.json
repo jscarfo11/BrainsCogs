@@ -8,5 +8,6 @@
     "description" : "Automatically delete messages in certain channels after a certain amount of time.",
     "tags" : ["delete", "automation"],
     "min_bot_version": "3.5.0",
+    "min_python_version": [3, 8, 0],
     "end_user_data_statement": "This cog does not store any end user data."
 }
