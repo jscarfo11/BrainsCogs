@@ -126,7 +126,7 @@ class Speak(commands.Cog):
             )
         else:
             await Tunnel.message_forwarder(destination=channel, content=message)
-        await ctx.message.add_reaction("✅")
+        await ctx.tick()
 
     @commands.admin()
     @commands.command(name="tunnel")
@@ -144,7 +144,7 @@ class Speak(commands.Cog):
         loop = asyncio.get_event_loop()
         edit_handler_task = loop.create_task(self.edit_handler(ctx, channel))
         message_handler_task = loop.create_task(self.message_handler(ctx, channel, edit_handler_task))
-        await ctx.message.add_reaction("✅")
+        await ctx.tick()
         await asyncio.gather(message_handler_task, edit_handler_task)
 
     @commands.admin()
@@ -159,7 +159,7 @@ class Speak(commands.Cog):
 
         else:
             await message.reply(content=content, mention_author=mention)
-        await ctx.message.add_reaction("✅")
+        await ctx.tick()
 
     @commands.admin()
     @commands.command(name="editmsg")
@@ -172,4 +172,4 @@ class Speak(commands.Cog):
         if len(content) > 2000:
             return await ctx.send("The message is too long.")
         await message.edit(content=content)
-        await ctx.message.add_reaction("✅")
+        await ctx.tick()

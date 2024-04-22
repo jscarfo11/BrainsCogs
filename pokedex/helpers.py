@@ -7,6 +7,7 @@ from rapidfuzz import utils, fuzz
 from redbot.core import commands
 from redbot.core.utils.predicates import ReactionPredicate
 from redbot.core.utils.menus import start_adding_reactions
+from redbot.core.utils.mod import check_permissions
 from requests.exceptions import HTTPError
 
 
@@ -152,3 +153,7 @@ async def fuzzy_item(ctx: commands.Context, item: str):
     else:
         await ctx.send("Sorry, I couldn't find the right item. Please try again.")
         return None
+
+
+async def embed_check(ctx: commands.Context):
+    return await check_permissions(ctx, {"embed_links": True})

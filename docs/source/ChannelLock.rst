@@ -2,7 +2,7 @@
 ChannelLock
 ================
 
-This cog allows you to lock a channel so that only certain roles can send messages in it. This is useful for bot commands channels, where you want to prevent users from sending messages in the channel when the bot is offline.
+This cog allows you to lock a channel so that only certain roles can send messages in it. This is useful for bot commands channels, where you want to prevent users from sending messages in the channel when the bot is offline. The bot requires the `embed links`, the `mange roles`, and the `manage channels` permissions to work properly.
 
 .. note::
 
