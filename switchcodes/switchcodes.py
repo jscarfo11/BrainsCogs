@@ -3,6 +3,7 @@ import asyncio
 
 from redbot.core import Config, commands
 from redbot.core.utils.predicates import MessagePredicate
+from redbot.core.utils.mod import check_permissions
 
 
 class SwitchCodes(commands.Cog):
@@ -27,13 +28,13 @@ class SwitchCodes(commands.Cog):
             user = ctx.author
         code = await self.config.guild(ctx.guild).codes.get_raw(str(user.id), default=None)
         if code is None:
-            await ctx.send("That user has not set their Friend Code.")
-        else:
+            return await ctx.send("That user has not set their Friend Code.")
+
+        if await check_permissions(ctx, {"embed_links": True}):
             embed = discord.Embed(colour=user.colour, title=f"{user.display_name}'s Friend Code", description=f"SW-{code}")
             await ctx.send(embed=embed)
-        await ctx.tick()
-        
-        return
+        else:
+            await ctx.send(f"{user.display_name}'s Friend Code: SW-{code}")
     
     @fc.command()
     async def add(self, ctx, code: str):
