@@ -3,7 +3,7 @@ import requests
 import pokebase as pb
 
 from redbot.core import commands
-from .helpers import construct_embed, get_sprite, get_pokemon, get_all_matches, fuzzy_move, fuzzy_ability, fuzzy_item
+from .helpers import construct_embed, get_sprite, get_pokemon, get_all_matches, fuzzy_move, fuzzy_ability, fuzzy_item, embed_check
 
 
 class Pokedex(commands.Cog):
@@ -15,6 +15,13 @@ class Pokedex(commands.Cog):
     async def on_cog_add(self, cog):
         wrong = pb.pokemon("")
         self.fuzzy_list = [i.name for i in wrong.results]
+
+    async def cog_check(self, ctx):
+        if embed_check(ctx):
+            return True
+        else:
+            await ctx.send("I need the `embed links` permission to run this command.")
+            return False
 
     @commands.group(aliases=["dex", "pd"])
     async def pokedex(self, ctx):
