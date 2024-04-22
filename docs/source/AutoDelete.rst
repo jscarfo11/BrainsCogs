@@ -2,7 +2,7 @@
 AutoDelete
 ================
 
-This cog allows users to set a channel to automatically delete messages after a certain amount of time. It allows for setting specific users and roles to be exempt from the deletion.
+This cog allows users to set a channel to automatically delete messages after a certain amount of time. It allows for setting specific users and roles to be exempt from the deletion. The bot must have the ``Manage Messages`` permission to use this cog.
 
 .. note::
 
