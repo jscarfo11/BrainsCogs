@@ -1,9 +1,18 @@
 import discord
-import requests
 import pokebase as pb
-
+import requests
 from redbot.core import commands
-from .helpers import construct_embed, get_sprite, get_pokemon, get_all_matches, fuzzy_move, fuzzy_ability, fuzzy_item, embed_check
+
+from .helpers import (
+    construct_embed,
+    embed_check,
+    fuzzy_ability,
+    fuzzy_item,
+    fuzzy_move,
+    get_all_matches,
+    get_pokemon,
+    get_sprite,
+)
 
 
 class Pokedex(commands.Cog):
@@ -37,13 +46,22 @@ class Pokedex(commands.Cog):
             return
 
         # Construct the embed
-        embed = discord.Embed(title=f"#{pokemon.order}: {pokemon.name.capitalize()}", color=await ctx.embed_color())
+        embed = discord.Embed(
+            title=f"#{pokemon.order}: {pokemon.name.capitalize()}",
+            color=await ctx.embed_color(),
+        )
         embed.set_image(url=pokemon.sprites.front_default)
         embed.add_field(name="Height", value=f"{pokemon.height}m")
         embed.add_field(name="Weight", value=f"{pokemon.weight}kg")
         embed.add_field(name="Base Experience", value=pokemon.base_experience)
-        embed.add_field(name="Types", value=", ".join([t.type.name.capitalize() for t in pokemon.types]))
-        embed.add_field(name="Searchable By", value=f'ID: `{pokemon.id}` | Name: `{pokemon.name.capitalize()}`')
+        embed.add_field(
+            name="Types",
+            value=", ".join([t.type.name.capitalize() for t in pokemon.types]),
+        )
+        embed.add_field(
+            name="Searchable By",
+            value=f"ID: `{pokemon.id}` | Name: `{pokemon.name.capitalize()}`",
+        )
         abilities = []
         for ability in pokemon.abilities:
             if ability.is_hidden:
@@ -51,7 +69,10 @@ class Pokedex(commands.Cog):
             else:
                 abilities.append(ability.ability.name.capitalize())
         embed.add_field(name="Abilities", value=", ".join(abilities))
-        embed.add_field(name="Base Stats", value=" / ".join([f"{s.base_stat}" for s in pokemon.stats]))
+        embed.add_field(
+            name="Base Stats",
+            value=" / ".join([f"{s.base_stat}" for s in pokemon.stats]),
+        )
 
         await ctx.send(embed=embed)
 
@@ -60,7 +81,9 @@ class Pokedex(commands.Cog):
         """Get the name of a Pokemon required by the API."""
         try:
             pokemon = pb.pokemon(int(search))
-            return await ctx.send(f"#{pokemon.id}: {pokemon.name.capitalize()}")  # If the search is an ID
+            return await ctx.send(
+                f"#{pokemon.id}: {pokemon.name.capitalize()}"
+            )  # If the search is an ID
         except (requests.exceptions.HTTPError, AttributeError):  # Fuzzy search
             return await ctx.send("Pokemon not found. Please check your spelling and try again.")
         except ValueError:
@@ -92,9 +115,9 @@ class Pokedex(commands.Cog):
         for i in ability.pokemon:
             learns.append(i.pokemon.name.capitalize())
         index = {
-            'Effect': ability.effect_entries[1].short_effect,
+            "Effect": ability.effect_entries[1].short_effect,
             "Flavor Text": ability.flavor_text_entries[1].flavor_text,
-            "Possessed by": ", \n".join(learns)
+            "Possessed by": ", \n".join(learns),
         }
         await construct_embed(index, embed)
         await ctx.send(embed=embed)
@@ -122,13 +145,12 @@ class Pokedex(commands.Cog):
             learn.append(i.name.capitalize())
 
         index = {
-            'Type': move.type.name.capitalize(),
-            'Power': move.power,
-            'PP': move.pp,
-            'Accuracy': move.accuracy,
-            'Effect': move.effect_entries[0].short_effect,
-            'Learned By': ", \n".join(learn)
-
+            "Type": move.type.name.capitalize(),
+            "Power": move.power,
+            "PP": move.pp,
+            "Accuracy": move.accuracy,
+            "Effect": move.effect_entries[0].short_effect,
+            "Learned By": ", \n".join(learn),
         }
         await construct_embed(index, embed)
 
@@ -142,7 +164,13 @@ class Pokedex(commands.Cog):
             return
         moves = []
         for i in pokemon.moves:
-            moves.append([i.move.name.capitalize(), i.version_group_details[0].level_learned_at, i])
+            moves.append(
+                [
+                    i.move.name.capitalize(),
+                    i.version_group_details[0].level_learned_at,
+                    i,
+                ]
+            )
         levelup = []
         tutor = []
         machine = []
@@ -182,16 +210,23 @@ class Pokedex(commands.Cog):
                 return
         embed = discord.Embed(title=f"{item.name.capitalize()}", color=await ctx.embed_color())
         index = {
-            'Category': item.category.name.capitalize(),
-            'Cost': item.cost,
-            'Effect': item.effect_entries[0].short_effect
+            "Category": item.category.name.capitalize(),
+            "Cost": item.cost,
+            "Effect": item.effect_entries[0].short_effect,
         }
         embed.set_thumbnail(url=item.sprites.default)
         await construct_embed(index, embed)
         await ctx.send(embed=embed)
 
     @pokedex.command(aliases=["sprites", "pic", "image", "img"])
-    async def sprite(self, ctx, pokemon: str, shiny: bool = False, gender: str = "M", front: bool = True):
+    async def sprite(
+        self,
+        ctx,
+        pokemon: str,
+        shiny: bool = False,
+        gender: str = "M",
+        front: bool = True,
+    ):
         """
         Get the sprite of a Pokemon by name or ID.
 

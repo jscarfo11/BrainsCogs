@@ -77,5 +77,3 @@ tunnel
     You can then close the tunnel by responding to the dm with the message: ::
 
         close_tunnel
-
-

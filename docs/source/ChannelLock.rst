@@ -86,4 +86,3 @@ unlock
     **Usage:** ::
 
             [p]unlock
-

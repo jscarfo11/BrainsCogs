@@ -134,4 +134,3 @@ pokedex sprite
         [p]pokedex sprite bulbasaur
         [p]pokedex img charmander shiny F B
         [p]pokedex image 1 True
-

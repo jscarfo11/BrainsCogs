@@ -1,13 +1,13 @@
-import discord
 import textwrap
-import rapidfuzz
-import pokebase
 
-from rapidfuzz import utils, fuzz
+import discord
+import pokebase
+import rapidfuzz
+from rapidfuzz import fuzz, utils
 from redbot.core import commands
-from redbot.core.utils.predicates import ReactionPredicate
 from redbot.core.utils.menus import start_adding_reactions
 from redbot.core.utils.mod import check_permissions
+from redbot.core.utils.predicates import ReactionPredicate
 from requests.exceptions import HTTPError
 
 
@@ -76,8 +76,13 @@ async def get_pokemon(ctx: commands.Context, pokemon: str, fuzzy_list: list[str]
 
 
 async def fuzzy_search(ctx: commands.Context, pokemon: str, pokemon_list: list[str]):
-    x = rapidfuzz.process.extractOne(pokemon, pokemon_list, processor=utils.default_process, score_cutoff=80,
-                                     scorer=fuzz.WRatio)
+    x = rapidfuzz.process.extractOne(
+        pokemon,
+        pokemon_list,
+        processor=utils.default_process,
+        score_cutoff=80,
+        scorer=fuzz.WRatio,
+    )
     if x is None:
         return False
     message = await ctx.send(f"Did you mean {x[0].strip().capitalize()}?")
@@ -92,7 +97,9 @@ async def fuzzy_search(ctx: commands.Context, pokemon: str, pokemon_list: list[s
 
 
 async def get_all_matches(pokemon: str, pokemon_list: list[str]):
-    options = rapidfuzz.process.extract(pokemon, pokemon_list, processor=utils.default_process, score_cutoff=60)
+    options = rapidfuzz.process.extract(
+        pokemon, pokemon_list, processor=utils.default_process, score_cutoff=60
+    )
     final = []
     for i in options:
         x = i[0]
@@ -102,9 +109,14 @@ async def get_all_matches(pokemon: str, pokemon_list: list[str]):
 
 
 async def fuzzy_move(ctx: commands.Context, move: str):
-    move_list = [i.name for i in pokebase.move('w').results]
-    x = rapidfuzz.process.extractOne(move, move_list, processor=utils.default_process, score_cutoff=80,
-                                     scorer=fuzz.WRatio)
+    move_list = [i.name for i in pokebase.move("w").results]
+    x = rapidfuzz.process.extractOne(
+        move,
+        move_list,
+        processor=utils.default_process,
+        score_cutoff=80,
+        scorer=fuzz.WRatio,
+    )
     if x is None:
         await ctx.send("Move not found. Please check your spelling and try again.")
         return None
@@ -120,9 +132,14 @@ async def fuzzy_move(ctx: commands.Context, move: str):
 
 
 async def fuzzy_ability(ctx: commands.Context, ability: str):
-    ability_list = [i.name for i in pokebase.ability('w').results]
-    x = rapidfuzz.process.extractOne(ability, ability_list, processor=utils.default_process, score_cutoff=80,
-                                     scorer=fuzz.WRatio)
+    ability_list = [i.name for i in pokebase.ability("w").results]
+    x = rapidfuzz.process.extractOne(
+        ability,
+        ability_list,
+        processor=utils.default_process,
+        score_cutoff=80,
+        scorer=fuzz.WRatio,
+    )
     if x is None:
         await ctx.send("Ability not found. Please check your spelling and try again.")
         return None
@@ -138,9 +155,14 @@ async def fuzzy_ability(ctx: commands.Context, ability: str):
 
 
 async def fuzzy_item(ctx: commands.Context, item: str):
-    item_list = [i.name for i in pokebase.item('w').results]
-    x = rapidfuzz.process.extractOne(item, item_list, processor=utils.default_process, score_cutoff=80,
-                                     scorer=fuzz.WRatio)
+    item_list = [i.name for i in pokebase.item("w").results]
+    x = rapidfuzz.process.extractOne(
+        item,
+        item_list,
+        processor=utils.default_process,
+        score_cutoff=80,
+        scorer=fuzz.WRatio,
+    )
     if x is None:
         await ctx.send("Item not found. Please check your spelling and try again.")
         return None

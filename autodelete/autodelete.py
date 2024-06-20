@@ -1,10 +1,7 @@
-import discord
 import asyncio
 
-from discord.ext.commands import Context
-from discord.ext.commands._types import BotT
-
-from redbot.core import checks, commands, Config
+import discord
+from redbot.core import Config, checks, commands
 
 
 class AutoDelete(commands.Cog):
@@ -19,8 +16,6 @@ class AutoDelete(commands.Cog):
             "time": 5,
         }
         self.config.register_guild(**default_guild)
-
-
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -94,7 +89,11 @@ class AutoDelete(commands.Cog):
             return
         channels = [ctx.guild.get_channel(c).mention for c in channels]
         description = "\n".join(channels)
-        embed = discord.Embed(title="Auto Delete Channels", description=description, color=await ctx.embed_color())
+        embed = discord.Embed(
+            title="Auto Delete Channels",
+            description=description,
+            color=await ctx.embed_color(),
+        )
         await ctx.send(embed=embed)
 
     @autodelete.group(name="user", aliases=["users"])
@@ -131,7 +130,11 @@ class AutoDelete(commands.Cog):
             return
         users = [ctx.guild.get_member(u).mention for u in users]
         description = "\n".join(users)
-        embed = discord.Embed(title="Auto Delete Users", description=description, color=await ctx.embed_color())
+        embed = discord.Embed(
+            title="Auto Delete Users",
+            description=description,
+            color=await ctx.embed_color(),
+        )
         await ctx.send(embed=embed)
 
     @autodelete.group(name="role", aliases=["roles"])
@@ -168,7 +171,11 @@ class AutoDelete(commands.Cog):
             return
         roles = [ctx.guild.get_role(r).mention for r in roles]
         description = "\n".join(roles)
-        embed = discord.Embed(title="Auto Delete Roles", description=description, color=await ctx.embed_color())
+        embed = discord.Embed(
+            title="Auto Delete Roles",
+            description=description,
+            color=await ctx.embed_color(),
+        )
         await ctx.send(embed=embed)
 
     @autodelete.group(name="time")
@@ -176,14 +183,16 @@ class AutoDelete(commands.Cog):
         """Manage the amount of time before the messages get deleted"""
         pass
 
-    @autodelete_time.command(name='set')
+    @autodelete_time.command(name="set")
     async def time_set(self, ctx, num: int):
         """Set the amount of time for the autodelete"""
         await self.config.guild(ctx.guild).time.set(num)
         await ctx.send(f"The message delete time is now {num} seconds")
 
-    @autodelete_time.command(name='show')
+    @autodelete_time.command(name="show")
     async def time_show(self, ctx):
         """Gets the current amount of time for the autodelete"""
         num = await self.config.guild(ctx.guild).time()
-        await ctx.send(f'The current amount of time before auto-deleting a message is {num} seconds.')
+        await ctx.send(
+            f"The current amount of time before auto-deleting a message is {num} seconds."
+        )

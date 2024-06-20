@@ -1,10 +1,9 @@
-import discord
 import asyncio
 
+import discord
 from discord.ext.commands import Context
 from discord.ext.commands._types import BotT
-
-from redbot.core import commands, Config, checks
+from redbot.core import Config, checks, commands
 from redbot.core.utils.predicates import MessagePredicate
 
 
@@ -25,8 +24,11 @@ class ChannelLock(commands.Cog):
         self.config.register_guild(**default_guild)
 
     async def cog_check(self, ctx: Context[BotT]) -> bool:
-        value = (await self.bot.is_owner(ctx.author)
-                 or await self.bot.is_admin(ctx.author) or await self.bot.is_mod(ctx.author))
+        value = (
+            await self.bot.is_owner(ctx.author)
+            or await self.bot.is_admin(ctx.author)
+            or await self.bot.is_mod(ctx.author)
+        )
         return value
 
     async def lock_channel(self, ctx, roles):
@@ -76,8 +78,12 @@ class ChannelLock(commands.Cog):
             if channel.id in channels:
                 return await ctx.send("This channel is already a regular channel.")
 
-        c_type = MessagePredicate.lower_contained_in(["regular", "supporter"])  # Regular or Supporter
-        await ctx.send("What type of channel would you like to add this to? `regular` or `supporter`.")
+        c_type = MessagePredicate.lower_contained_in(
+            ["regular", "supporter"]
+        )  # Regular or Supporter
+        await ctx.send(
+            "What type of channel would you like to add this to? `regular` or `supporter`."
+        )
         try:
             await ctx.bot.wait_for("message", check=c_type, timeout=10)
         except asyncio.TimeoutError:
@@ -103,11 +109,15 @@ class ChannelLock(commands.Cog):
         async with self.config.guild(ctx.guild).regular_channels() as channels:
             if channel.id in channels:
                 channels.remove(channel.id)
-                return await ctx.send(f"{channel.mention} has been removed from the regular channel list.")
+                return await ctx.send(
+                    f"{channel.mention} has been removed from the regular channel list."
+                )
         async with self.config.guild(ctx.guild).supporter_channels() as channels:
             if channel.id in channels:
                 channels.remove(channel.id)
-                return await ctx.send(f"{channel.mention} has been removed from the supporter channel list.")
+                return await ctx.send(
+                    f"{channel.mention} has been removed from the supporter channel list."
+                )
         await ctx.send("This channel is not locked.")
 
     @channel.command(name="list")
@@ -148,7 +158,8 @@ class ChannelLock(commands.Cog):
         for role in roles:
             r_type = MessagePredicate.lower_contained_in(["admin", "supporter", "access"])
             await ctx.send(
-                f"What type of role would you like to add {role.name} to? `admin`, `supporter`, or `access`.")
+                f"What type of role would you like to add {role.name} to? `admin`, `supporter`, or `access`."
+            )
             try:
                 await ctx.bot.wait_for("message", check=r_type, timeout=10)
             except asyncio.TimeoutError:
@@ -195,14 +206,17 @@ class ChannelLock(commands.Cog):
                     continue
             await ctx.send(
                 f"{role.name} is not a role you have set. Run `{self.bot.get_prefix()}channellock role list` to see "
-                f"all of your roles.")
+                f"all of your roles."
+            )
 
     @role_add.error
     @role_remove.error
     async def role_error_handler(self, ctx, error):
         print(type(error))
         if isinstance(error, commands.RoleNotFound):
-            await ctx.send("Role not found. If you are using the role name and it has a space, use double quotes.")
+            await ctx.send(
+                "Role not found. If you are using the role name and it has a space, use double quotes."
+            )
         else:
             await ctx.bot.on_command_error(ctx, error, unhandled_by_cog=True)
 
@@ -274,21 +288,27 @@ class ChannelLock(commands.Cog):
         else:
             await ctx.send("Channel locked.")
 
-    @commands.command(name="unlock", aliases=["unlockchannel", "bu", "botup", "bbo", "botbackonline"])
+    @commands.command(
+        name="unlock", aliases=["unlockchannel", "bu", "botup", "bbo", "botbackonline"]
+    )
     async def unlock(self, ctx):
-        """"Unlock a channel."""
+        """ "Unlock a channel."""
         channel = ctx.channel
         if channel.id not in await self.config.guild(ctx.guild).locked_channels():
             return await ctx.send("This channel is not locked.")
         if channel.id in await self.config.guild(ctx.guild).supporter_channels():
             supporter = await self.config.guild(ctx.guild).supporter_roles()
             if not supporter:
-                return await ctx.send("This channel is locked to supporter roles, but no supporter roles are set.")
+                return await ctx.send(
+                    "This channel is locked to supporter roles, but no supporter roles are set."
+                )
             await self.channel_unlock(ctx, supporter)
         elif channel.id in await self.config.guild(ctx.guild).regular_channels():
             regular = await self.config.guild(ctx.guild).access_roles()
             if not regular:
-                return await ctx.send("This channel is locked to regular roles, but no regular roles are set.")
+                return await ctx.send(
+                    "This channel is locked to regular roles, but no regular roles are set."
+                )
             await self.channel_unlock(ctx, regular)
         else:
             return await ctx.send("This channel is not configured to be locked.")

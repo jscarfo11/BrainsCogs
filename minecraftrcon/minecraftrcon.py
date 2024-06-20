@@ -1,14 +1,13 @@
 import discord
-
-from redbot.core import commands, Config
+from mctools import PINGClient, QUERYClient, RCONClient
+from redbot.core import Config, commands
 from redbot.core.utils.predicates import MessagePredicate
-from mctools import RCONClient, PINGClient, QUERYClient
 
 
 class MinecraftRCON(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.valid_responses = ['[0m', '']
+        self.valid_responses = ["[0m", ""]
         self.config = Config.get_conf(self, identifier=655564502358165984158594)
         default_guild = {
             "host": "",
@@ -16,7 +15,7 @@ class MinecraftRCON(commands.Cog):
             "password": "",
             "admins": [],
             "rcon_channel": [],
-            "whitelist": {}
+            "whitelist": {},
         }
         self.config.register_guild(**default_guild)
 
@@ -55,10 +54,12 @@ class MinecraftRCON(commands.Cog):
             else:
                 await ctx.send("Failed to login to RCON.")
         except ConnectionRefusedError:
-            await ctx.send("Failed to connect to RCON. Check that the server is online and the RCON port is "
-                           "correct.")
+            await ctx.send(
+                "Failed to connect to RCON. Check that the server is online and the RCON port is "
+                "correct."
+            )
         except Exception as e:
-            await ctx.send(f"An error occurred. Please try again later.")
+            await ctx.send("An error occurred. Please try again later.")
             raise e
 
     @rcon.group()
@@ -109,11 +110,14 @@ class MinecraftRCON(commands.Cog):
         if ctx.author.id not in admins:
             return await ctx.send("You do not have permission to run this command.")
         message = MessagePredicate.lower_contained_in(["add", "a", "remove", "r", "cancel", "c"])
-        embed = discord.Embed(title="Add/Remove Admin",
-                              description=f"Would you like to add or remove {channel.mention} as a RCON message channel?",
-                              color=await ctx.embed_color())
+        embed = discord.Embed(
+            title="Add/Remove Admin",
+            description=f"Would you like to add or remove {channel.mention} as a RCON message channel?",
+            color=await ctx.embed_color(),
+        )
         embed.set_footer(
-            text="Type 'add' to add the channel as an admin, 'remove' to remove it, or 'cancel' to cancel.")
+            text="Type 'add' to add the channel as an admin, 'remove' to remove it, or 'cancel' to cancel."
+        )
         await ctx.send(embed=embed)
         try:
             await self.bot.wait_for("message", check=message, timeout=10)
@@ -144,28 +148,41 @@ class MinecraftRCON(commands.Cog):
 
         host = await self.config.guild(ctx.guild).host()
         port = await self.config.guild(ctx.guild).port()
-        embed = discord.Embed(title=f"RCON Settings for {ctx.guild.name}", color=await ctx.embed_color())
+        embed = discord.Embed(
+            title=f"RCON Settings for {ctx.guild.name}", color=await ctx.embed_color()
+        )
         embed.add_field(name="Host", value=host)
         embed.add_field(name="Port", value=port)
         embed.add_field(name="Password", value="**********")
         embed.set_footer(text="To change these settings, use the rconsetup command.")
-        embed.add_field(name="Admins", value=", ".join(
-            [str(ctx.guild.get_member(a)) for a in await self.config.guild(ctx.guild).admins()]))
+        embed.add_field(
+            name="Admins",
+            value=", ".join(
+                [str(ctx.guild.get_member(a)) for a in await self.config.guild(ctx.guild).admins()]
+            ),
+        )
         await ctx.send(embed=embed)
 
     @setup.command()
     async def admin(self, ctx, user: discord.Member):
         """RCON Admin management."""
         admins = await self.config.guild(ctx.guild).admins()
-        if ctx.author.id not in admins and not await self.bot.is_admin(ctx.author) and not await self.bot.is_owner(
-                ctx.author):
+        if (
+            ctx.author.id not in admins
+            and not await self.bot.is_admin(ctx.author)
+            and not await self.bot.is_owner(ctx.author)
+        ):
             await ctx.send("You do not have permission to run this command.")
             return
         message = MessagePredicate.lower_contained_in(["add", "a", "remove", "r", "cancel", "c"])
-        embed = discord.Embed(title="Add/Remove Admin",
-                              description=f"Would you like to add or remove {user.mention} as an admin?",
-                              color=await ctx.embed_color())
-        embed.set_footer(text="Type 'add' to add the user as an admin, 'remove' to remove them, or 'cancel' to cancel.")
+        embed = discord.Embed(
+            title="Add/Remove Admin",
+            description=f"Would you like to add or remove {user.mention} as an admin?",
+            color=await ctx.embed_color(),
+        )
+        embed.set_footer(
+            text="Type 'add' to add the user as an admin, 'remove' to remove them, or 'cancel' to cancel."
+        )
         await ctx.send(embed=embed)
         try:
             await self.bot.wait_for("message", check=message, timeout=10)
@@ -191,12 +208,17 @@ class MinecraftRCON(commands.Cog):
     async def clear_config(self, ctx):
         """Clear the RCON config."""
         admins = await self.config.guild(ctx.guild).admins()
-        if ctx.author.id not in admins and not await self.bot.is_admin(ctx.author) and not await self.bot.is_owner(
-                ctx.author):
+        if (
+            ctx.author.id not in admins
+            and not await self.bot.is_admin(ctx.author)
+            and not await self.bot.is_owner(ctx.author)
+        ):
             return await ctx.send("You do not have permission to run this command.")
         check = MessagePredicate.yes_or_no()
         try:
-            await ctx.send("Are you sure you want to clear the config? This cannot be undone. Yes/No")
+            await ctx.send(
+                "Are you sure you want to clear the config? This cannot be undone. Yes/No"
+            )
             await self.bot.wait_for("message", check=check, timeout=10)
         except TimeoutError:
             return await ctx.send("You took too long to respond.")
@@ -216,7 +238,9 @@ class MinecraftRCON(commands.Cog):
         try:
             await ctx.send(f"Server is online. Response time: {client.ping()}ms")
         except ConnectionRefusedError:
-            await ctx.send("Server is offline. This command may be having issues. Use `[p]rcon players` to check.")
+            await ctx.send(
+                "Server is offline. This command may be having issues. Use `[p]rcon players` to check."
+            )
 
     @rcon.command()
     async def players(self, ctx):
@@ -228,8 +252,11 @@ class MinecraftRCON(commands.Cog):
         try:
             stats = query.get_full_stats()
             embed = discord.Embed(title=f"Players on {host}", color=await ctx.embed_color())
-            embed.add_field(name="Players", value=", ".join(stats['players']).strip('\x1b[0m'))
-            embed.add_field(name="Player Count", value=stats['numplayers'] + "/" + stats['maxplayers'])
+            embed.add_field(name="Players", value=", ".join(stats["players"]).strip("\x1b[0m"))
+            embed.add_field(
+                name="Player Count",
+                value=stats["numplayers"] + "/" + stats["maxplayers"],
+            )
             await ctx.send(embed=embed)
         except ConnectionRefusedError:
             await ctx.send("Server is offline.")
@@ -260,8 +287,10 @@ class MinecraftRCON(commands.Cog):
                 else:
                     await ctx.send("Failed to login to RCON.")
             except ConnectionRefusedError:
-                await ctx.send("Failed to connect to RCON. Check that the server is online and the RCON port is "
-                               "correct.")
+                await ctx.send(
+                    "Failed to connect to RCON. Check that the server is online and the RCON port is "
+                    "correct."
+                )
 
     @whitelist.command()
     async def remove(self, ctx, user: str):
@@ -277,7 +306,10 @@ class MinecraftRCON(commands.Cog):
             try:
                 if rcon.login(password):
                     resp = rcon.command(f"whitelist remove {user}").strip("[0m")
-                    if resp in self.valid_responses or resp == f"Removed {user} from the whitelist":
+                    if (
+                        resp in self.valid_responses
+                        or resp == f"Removed {user} from the whitelist"
+                    ):
                         await ctx.send(f"{user} has been removed from the whitelist.")
                         whitelist.pop(str(ctx.author.id))
                     else:
@@ -285,8 +317,10 @@ class MinecraftRCON(commands.Cog):
                 else:
                     await ctx.send("Failed to login to RCON.")
             except ConnectionRefusedError:
-                await ctx.send("Failed to connect to RCON. Check that the server is online and the RCON port is "
-                               "correct.")
+                await ctx.send(
+                    "Failed to connect to RCON. Check that the server is online and the RCON port is "
+                    "correct."
+                )
 
     @whitelist.command(aliases=["showlist", "list"])
     async def show(self, ctx):
@@ -307,7 +341,9 @@ class MinecraftRCON(commands.Cog):
                 return await ctx.send("You do not have permission to run this command.")
         async with self.config.guild(ctx.guild).whitelist() as whitelist:
             whitelist[str(user.id)] = user_override
-            await ctx.send(f"{user.name}'s whitelist entry has been overridden with {user_override}.")
+            await ctx.send(
+                f"{user.name}'s whitelist entry has been overridden with {user_override}."
+            )
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -317,15 +353,19 @@ class MinecraftRCON(commands.Cog):
         if message.author.bot:
             return
         if message.content.startswith("!rcon"):
-            return await message.channel.send("Please don't use the RCON commands in this channel.")
+            return await message.channel.send(
+                "Please don't use the RCON commands in this channel."
+            )
         if message.content.startswith("!"):
             return
         msg = message.content
         if "{password}" in msg:
             async with self.config.guild(message.guild).admin() as admins:
                 x = [message.guild.get_member(a) for a in admins]
-            return await message.channel.send("Please don't include the password in your message. " +
-                                              ", ".join([i.mention for i in x]))
+            return await message.channel.send(
+                "Please don't include the password in your message. "
+                + ", ".join([i.mention for i in x])
+            )
 
         host = await self.config.guild(message.guild).host()
         port = await self.config.guild(message.guild).port()
@@ -345,9 +385,10 @@ class MinecraftRCON(commands.Cog):
         except ConnectionRefusedError:
             await message.channel.send(
                 "Failed to connect to RCON. Check that the server is online and the RCON port is "
-                "correct.")
+                "correct."
+            )
         except Exception as e:
-            await message.channel.send(f"An error occurred. Please try again later.")
+            await message.channel.send("An error occurred. Please try again later.")
             raise e
 
 

@@ -85,4 +85,3 @@ autodelete toggle
 
     **Usage:**
     ``[p]autodelete toggle``
-
