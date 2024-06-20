@@ -13,4 +13,5 @@ class Legacy(commands.Cog):
         """This is a legacy command."""
         role = discord.utils.get(ctx.guild.roles, id=self.role)
         await user.add_roles(role)
-        await ctx.send(f"Added the role to {user.mention}.")
+        text = "> With said role you no longer have to pay in order to access the premium bots\n> No other perks are included\n> So basically free premium after being a premium member for 1 year\n> You can cancel your current sub if you want."
+        await ctx.send(text)
