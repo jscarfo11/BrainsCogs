@@ -1,12 +1,5 @@
 import discord
-from redbot.cogs.mod.utils import is_allowed_by_hierarchy
 from redbot.core import commands
-
-
-class TouchableMember(commands.MemberConverter):
-    def __init__(self, response: bool = True):
-        self.response = response
-        super().__init__()
 
 
 class Legacy(commands.Cog):
@@ -18,5 +11,6 @@ class Legacy(commands.Cog):
     @commands.command()
     async def legacy(self, ctx, user: discord.Member):
         """This is a legacy command."""
-        await self.bot.add_roles(user, self.role)
+        role = discord.utils.get(ctx.guild.roles, id=self.role)
+        await user.add_roles(role)
         await ctx.send(f"Added the role to {user.mention}.")
