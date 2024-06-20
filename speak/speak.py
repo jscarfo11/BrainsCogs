@@ -1,11 +1,11 @@
-import discord
-import datetime
 import asyncio
-
-from redbot.core import commands
+import datetime
 from typing import Optional
-from redbot.core.utils.tunnel import Tunnel
+
+import discord
 from discord.utils import format_dt
+from redbot.core import commands
+from redbot.core.utils.tunnel import Tunnel
 
 
 class Speak(commands.Cog):
@@ -13,12 +13,14 @@ class Speak(commands.Cog):
         self.tunnel_users = []
         self.bot = bot
 
-    async def message_handler(self, ctx: commands.Context, channel: discord.TextChannel, task: asyncio.Task):
+    async def message_handler(
+        self, ctx: commands.Context, channel: discord.TextChannel, task: asyncio.Task
+    ):
         user = ctx.author.id
         stime = datetime.datetime.now()
         while user in self.tunnel_users:
             try:
-                msg = await self.bot.wait_for('message', timeout=360)
+                msg = await self.bot.wait_for("message", timeout=360)
             except TimeoutError:
                 await ctx.author.send("Tunnel closed due to inactivity.")
                 self.tunnel_users.remove(user)
@@ -33,7 +35,9 @@ class Speak(commands.Cog):
                     await ctx.author.send("Tunnel closed.")
                     break
                 files = await Tunnel.files_from_attatch(msg)
-                await Tunnel.message_forwarder(destination=channel, content=msg.content, files=files)
+                await Tunnel.message_forwarder(
+                    destination=channel, content=msg.content, files=files
+                )
                 stime = datetime.datetime.now()
             elif msg.author.id == user:
                 continue
@@ -74,7 +78,7 @@ class Speak(commands.Cog):
                 break
             msg = None
             try:
-                msg = await self.bot.wait_for('message_edit', timeout=5)
+                msg = await self.bot.wait_for("message_edit", timeout=5)
                 user_check(user)
                 msg = await channel.fetch_message(msg[1].id)
                 if msg.id in active:
@@ -114,16 +118,22 @@ class Speak(commands.Cog):
 
     @commands.admin()
     @commands.command(aliases=["say"])
-    async def speak(self, ctx: commands.Context, channel: Optional[discord.TextChannel], *, message: str):
+    async def speak(
+        self,
+        ctx: commands.Context,
+        channel: Optional[discord.TextChannel],
+        *,
+        message: str,
+    ):
         """Say a message in a channel."""
-        if channel is None:  # If channel is a number then it will automatically convert to a channel object
+        if (
+            channel is None
+        ):  # If channel is a number then it will automatically convert to a channel object
             channel = ctx.channel
 
         files = await Tunnel.files_from_attatch(ctx.message)
         if files:
-            await Tunnel.message_forwarder(
-                destination=channel, content=message, files=files
-            )
+            await Tunnel.message_forwarder(destination=channel, content=message, files=files)
         else:
             await Tunnel.message_forwarder(destination=channel, content=message)
         await ctx.tick()
@@ -135,21 +145,32 @@ class Speak(commands.Cog):
         user = ctx.author.id
         if user in self.tunnel_users:
             return await ctx.author.send("You already have a tunnel open.")
-        dm_msg = ("You have opened a tunnel to this channel. "
-                  "\nAnything you say will be sent to the channel you have chosen. "
-                  "\nYou will also receive any messages sent to that channel. "
-                  "\nTo close the tunnel, send a message here that says `close_tunnel`.")  # Message to send to the user
+        dm_msg = (
+            "You have opened a tunnel to this channel. "
+            "\nAnything you say will be sent to the channel you have chosen. "
+            "\nYou will also receive any messages sent to that channel. "
+            "\nTo close the tunnel, send a message here that says `close_tunnel`."
+        )  # Message to send to the user
         await ctx.author.send(dm_msg)
         self.tunnel_users.append(user)
         loop = asyncio.get_event_loop()
         edit_handler_task = loop.create_task(self.edit_handler(ctx, channel))
-        message_handler_task = loop.create_task(self.message_handler(ctx, channel, edit_handler_task))
+        message_handler_task = loop.create_task(
+            self.message_handler(ctx, channel, edit_handler_task)
+        )
         await ctx.tick()
         await asyncio.gather(message_handler_task, edit_handler_task)
 
     @commands.admin()
     @commands.command(name="reply")
-    async def reply(self, ctx: commands.Context, mention: Optional[bool], message: discord.Message, *, content: str):
+    async def reply(
+        self,
+        ctx: commands.Context,
+        mention: Optional[bool],
+        message: discord.Message,
+        *,
+        content: str,
+    ):
         """Reply to a message."""
         if mention is None:
             mention = False

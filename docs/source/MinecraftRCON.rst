@@ -62,7 +62,7 @@ rcon whitelist
 ^^^^^^^^^^^^^^^^^^^^^
 
     This command is used to whitelist users on the Minecraft server. It links the users discord account to their Minecraft username. This allows for messages sent in the server chat to be linked to the users discord account.
-    It four subcommands: ::
+    It has four subcommands: ::
 
     - rcon whitelist add <minecraft_username> # Adds the user to the whitelist.
     - rcon whitelist remove <minecraft_username> # Removes the user from the whitelist.
@@ -105,5 +105,3 @@ rcon players
     [p]rcon players
 
     This command is unrestricted.
-
-

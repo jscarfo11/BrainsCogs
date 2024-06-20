@@ -69,4 +69,3 @@ friendcode remove (fc remove)
     Response: Are you sure you want to remove your friend code? (yes/no)
     User: yes
     Response: Your friend code has been removed.
-
