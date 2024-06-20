@@ -16,7 +16,7 @@ class Legacy(commands.Cog):
 
     @commands.has_any_role(1188264672370098207, 878727109143580683, 810013892670521364)
     @commands.command()
-    async def legacy(self, ctx, user: discord.Member)
+    async def legacy(self, ctx, user: discord.Member):
         """This is a legacy command."""
         await self.bot.add_roles(user, self.role)
         await ctx.send(f"Added the role to {user.mention}.")
