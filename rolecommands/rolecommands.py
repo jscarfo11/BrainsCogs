@@ -29,3 +29,14 @@ class RoleCommands(commands.Cog):
 
         await user.add_roles(role)
         await ctx.send(f"Added **{role.name}** to **{user.name}**.")
+
+    @commands.has_any_role(1188264672370098207, 878727109143580683, 810013892670521364)
+    @commands.command(aliases=["free", "mc"])
+    async def merrychristmas(self, ctx, user: discord.Member):
+        """This adds the cd role."""
+        role = discord.utils.get(ctx.guild.roles, id=self.role_cd)
+        if role in user.roles:
+            return await ctx.send(f"{user.name} already has the role.")
+
+        await user.add_roles(role)
+        await ctx.send(f"Added **{role.name}** to **{user.name}**.")
