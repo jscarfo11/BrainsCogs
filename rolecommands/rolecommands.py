@@ -6,7 +6,7 @@ class RoleCommands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.role_legacy = 1169638210205388920
-        self.role_cd = 1302064412689174528
+        self.role_christmas = 1312839539647189263
 
     @commands.has_any_role(1188264672370098207, 878727109143580683, 810013892670521364)
     @commands.command()
@@ -20,12 +20,16 @@ class RoleCommands(commands.Cog):
         await ctx.send(text + f"\nAdded **{role.name}** to **{user.name}**.")
 
     @commands.has_any_role(1188264672370098207, 878727109143580683, 810013892670521364)
-    @commands.command()
-    async def cd(self, ctx, user: discord.Member):
-        """This adds the cd role."""
-        role = discord.utils.get(ctx.guild.roles, id=self.role_cd)
+    @commands.command(aliases=["xmas", "christmasrole", "christmas"])
+    async def merrychristmas(self, ctx, user: discord.Member):
+        """This adds the christmas role."""
+        try:
+            role = discord.utils.get(ctx.guild.roles, id=self.role_christmas)
+            role_name = role.name
+        except AttributeError:
+            return await ctx.send("Role not found.")
         if role in user.roles:
             return await ctx.send(f"{user.name} already has the role.")
 
         await user.add_roles(role)
-        await ctx.send(f"Added **{role.name}** to **{user.name}**.")
+        await ctx.send(f"Added **{role_name}** to **{user.name}**.")
