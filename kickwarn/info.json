@@ -1,0 +1,13 @@
+{
+    "author" : ["brains"],
+    "install_msg" : "Thank you for installing KickWarn! Just adds a command that kicks and warns users",
+    "name" : "ChannelLock",
+    "hidden" : false,
+    "disabled" : false,
+    "short" : "Adds a kickwarn command",
+    "description" : "Adds a command that kicks and warns users",
+    "tags" : ["mod", "kickwarn", "moderation"],
+    "min_bot_version": "3.5.0",
+    "min_python_version": [3, 8, 0],
+    "end_user_data_statement": "This cog does not store any end user data."
+}
