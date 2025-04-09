@@ -42,3 +42,8 @@ class KickWarn(commands.Cog):
             )
             await member.send(embed=em)
         await ctx.invoke(self.bot.get_command("kick"), member=member, reason=reason)
+        await ctx.send(
+            (
+                f"**User**: {member.mention} kicked! | **Reason**: `{reason}` | **Your membership to the Continental has been** *—by thine own hand—* **revoked.**"
+            )
+        )
