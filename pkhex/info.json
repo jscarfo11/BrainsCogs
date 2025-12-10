@@ -1,0 +1,14 @@
+{
+  "author": ["brains"],
+  "install_msg": "",
+  "name": "PkHex",
+  "requirements": ["pythonnet"],
+  "hidden": false,
+  "disabled": false,
+  "short": "Certain minecraft commands",
+  "description": "Allows you to see information from pkhex files",
+  "tags": ["pokemon", "pkhex"],
+  "min_bot_version": "3.5.0",
+  "min_python_version": [3, 8, 0],
+  "end_user_data_statement": "This cog does not store any end user data."
+}
