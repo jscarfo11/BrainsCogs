@@ -1,3 +1,4 @@
+import asyncio
 import sys
 
 # import clr
@@ -53,7 +54,11 @@ class PkHex(commands.Cog):
             raise e
 
     @commands.command()
-    async def get_sid(self, ctx: commands.Context):
+    async def sid(self, ctx: commands.Context):
+        """Get the SID/TID of the first file attached to the command message."""
+
+        if len(ctx.message.attachments) == 0:
+            return await ctx.send("You must attach at least one PKHeX file.")
         import clr
 
         clr.AddReference("PKHeX.Core")
@@ -61,12 +66,32 @@ class PkHex(commands.Cog):
         from PKHeX.Core import Species
         from System import Array, Byte, Memory
 
-        for file in ctx.message.attachments:
-            data = await file.read()
-            net_bytes = Array[Byte](data)
-            mem = Memory[Byte](net_bytes)
+        file = ctx.message.attachments[0]
+        data = await file.read()
+        net_bytes = Array[Byte](data)
+        mem = Memory[Byte](net_bytes)
+
+        try:
 
             p = Core.EntityFormat.GetFromBytes(mem)
-            await ctx.send(
-                f"Info for {Species(p.Species)}\nTID: {p.DisplayTID}\nSID: {p.DisplaySID}"
+            msg = await ctx.send(
+                f"Info for {Species(p.Species)}\nTID: {p.DisplayTID}\nSID: {p.DisplaySID}\n React with ❌ in the next minute to delete this message."
             )
+        except Exception as e:
+            await ctx.send(f"Failed to parse {file.filename}")
+            raise e
+
+        await msg.add_reaction("❌")
+        try:
+            await self.bot.wait_for(
+                "reaction_add",
+                check=lambda r, u: r.message.id == msg.id
+                and str(r.emoji) == "❌"
+                and u.id == ctx.author.id,
+                timeout=60.0,
+            )
+        except asyncio.TimeoutError:
+            await msg.clear_reactions()
+            return
+
+        await msg.delete()
