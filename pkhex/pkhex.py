@@ -93,5 +93,5 @@ class PkHex(commands.Cog):
         except asyncio.TimeoutError:
             await msg.clear_reactions()
             return
-
+        await ctx.message.add_reaction("✅")
         await msg.delete()
